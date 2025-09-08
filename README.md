@@ -1,158 +1,146 @@
-# 🚛 Exodus Logistix - Complete Logistics Management System
+# Exodus Logistix
 
-A modern, full-featured logistics management platform built with Next.js 15, featuring real-time tracking, analytics, payments, and a beautiful UI.
+A comprehensive logistics management platform built with Next.js that streamlines shipping operations, provides real-time tracking, and offers powerful analytics for freight management.
 
-## ✨ Features
+## Overview
 
-### 🚚 Core Logistics
-- **Shipment Management** - Create, track, and manage shipments
-- **Real-time Tracking** - Live updates on shipment status and location
-- **Carrier Integration** - Connect with multiple shipping carriers
-- **Route Optimization** - AI-powered route planning and optimization
-- **Document Management** - Upload and manage shipping documents
+Exodus Logistix is designed to simplify complex logistics workflows. Whether you're managing a small business or enterprise-level shipping operations, this platform provides the tools you need to optimize your supply chain.
 
-### 📊 Analytics & Intelligence
-- **Market Intelligence** - Real-time freight market insights
-- **Analytics Dashboard** - Comprehensive shipping analytics
-- **Performance Metrics** - Track KPIs and shipping performance
-- **Custom Reports** - Generate detailed shipping reports
+## Key Features
 
-### 💳 Payments & Billing
-- **Stripe Integration** - Secure payment processing
-- **Invoice Management** - Automated billing and invoicing
-- **Rate Calculator** - AI-powered freight rate calculation
-- **Payment Tracking** - Monitor payment status and history
+### Shipment Management
+- Create and manage shipments with detailed tracking
+- Real-time status updates and location tracking
+- Multi-carrier integration for flexible shipping options
+- Automated notifications for all stakeholders
 
-### 🔐 Security & Authentication
-- **JWT Authentication** - Secure user authentication
-- **Role-based Access** - Different access levels for users
-- **Rate Limiting** - API protection against abuse
-- **Data Encryption** - Secure data handling
+### Analytics & Intelligence
+- Comprehensive shipping analytics dashboard
+- Performance metrics and KPI tracking
+- Market intelligence and rate predictions
+- Custom reporting and data export
 
-### 📱 Modern UI/UX
-- **Responsive Design** - Works on all devices
-- **Dark/Light Mode** - Theme switching support
-- **Modern Components** - Built with Radix UI and Tailwind CSS
-- **Accessibility** - WCAG compliant interface
+### Route Optimization
+- AI-powered route planning and optimization
+- Multi-stop route management
+- Fuel efficiency calculations
+- Cost optimization recommendations
 
-## 🛠️ Tech Stack
+### Document Management
+- Digital document storage and management
+- Automated document generation
+- Compliance tracking and validation
+- Secure file sharing and access control
 
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v3
-- **UI Components**: Radix UI, Lucide React
+### Payment Integration
+- Secure payment processing with Stripe
+- Automated billing and invoicing
+- Multi-currency support
+- Financial reporting and analytics
+
+## Technology Stack
+
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS, Radix UI components
 - **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT with bcrypt
-- **Payments**: Stripe
+- **Authentication**: JWT-based auth with role management
+- **Payments**: Stripe integration
 - **File Storage**: AWS S3
-- **Email**: Nodemailer
-- **Deployment**: Vercel Ready
+- **Email**: Nodemailer with SMTP
+- **API Integration**: Greenscreens.ai for freight intelligence
 
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ 
 - PostgreSQL database
 - AWS S3 bucket (for file storage)
 - Stripe account (for payments)
+- SMTP email service
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/rahmivinnn/Exodus-Webapp.git
-   cd Exodus-Webapp
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/username/exodus-logistix.git
+cd exodus-logistix
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2. Install dependencies:
+```bash
+npm install
+```
 
-3. **Setup environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Update `.env.local` with your configuration:
-   ```env
-   # Database
-   DATABASE_URL="postgresql://user:password@localhost:5432/exodus_logistix"
-   
-   # JWT
-   JWT_SECRET="your-super-secret-jwt-key-here"
-   
-   # Email
-   SMTP_HOST="smtp.gmail.com"
-   SMTP_PORT="587"
-   SMTP_USER="your-email@gmail.com"
-   SMTP_PASS="your-app-password"
-   
-   # AWS S3
-   AWS_ACCESS_KEY_ID="your-aws-access-key"
-   AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
-   AWS_REGION="us-east-1"
-   AWS_S3_BUCKET="your-s3-bucket"
-   
-   # Stripe
-   STRIPE_SECRET_KEY="sk_test_your-stripe-secret-key"
-   STRIPE_WEBHOOK_SECRET="whsec_your-webhook-secret"
-   
-   # Greenscreens API
-   GREENSCREENS_API_KEY="your-greenscreens-api-key"
-   GREENSCREENS_API_URL="https://api.greenscreens.ai"
-   ```
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-4. **Setup database**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+Edit `.env.local` with your configuration:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/exodus_logistix"
 
-5. **Run development server**
-   ```bash
-   npm run dev
-   ```
+# JWT
+JWT_SECRET="your-super-secret-jwt-key-here"
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+# Email
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
 
-## 📁 Project Structure
+# AWS S3
+AWS_ACCESS_KEY_ID="your-aws-access-key"
+AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
+AWS_REGION="us-east-1"
+AWS_S3_BUCKET="your-s3-bucket"
+
+# Stripe
+STRIPE_SECRET_KEY="sk_test_your-stripe-secret-key"
+STRIPE_WEBHOOK_SECRET="whsec_your-webhook-secret"
+
+# Greenscreens API
+GREENSCREENS_API_KEY="your-greenscreens-api-key"
+GREENSCREENS_API_URL="https://api.greenscreens.ai"
+```
+
+4. Set up the database:
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` to see the application.
+
+## Project Structure
 
 ```
 exodus-logistix/
-├── app/                    # Next.js App Router
+├── app/                    # Next.js app directory
 │   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   ├── carriers/      # Carrier management
-│   │   ├── shipments/     # Shipment operations
-│   │   ├── payments/      # Payment processing
-│   │   └── webhooks/      # Webhook handlers
-│   ├── (pages)/           # Application pages
+│   ├── shipping/          # Shipping management pages
 │   └── globals.css        # Global styles
 ├── components/            # React components
 │   ├── ui/               # Reusable UI components
-│   ├── forms/            # Form components
-│   └── layout/           # Layout components
+│   └── ...               # Feature-specific components
 ├── lib/                  # Utility libraries
 │   ├── auth.ts           # Authentication logic
 │   ├── database.ts       # Database connection
 │   ├── email.ts          # Email service
-│   └── utils.ts          # Utility functions
+│   └── ...               # Other utilities
 ├── hooks/                # Custom React hooks
-├── prisma/               # Database schema
-└── public/               # Static assets
+├── types/                # TypeScript type definitions
+└── prisma/               # Database schema and migrations
 ```
 
-## 🔧 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript checks
-
-## 🌐 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - User login
@@ -165,68 +153,79 @@ exodus-logistix/
 - `POST /api/shipments` - Create shipment
 - `GET /api/shipments/[id]` - Get shipment details
 - `PUT /api/shipments/[id]` - Update shipment
-- `DELETE /api/shipments/[id]` - Delete shipment
+
+### Tracking
+- `GET /api/tracking/[trackingNumber]` - Track shipment
 
 ### Carriers
 - `GET /api/carriers` - List carriers
-- `POST /api/carriers` - Add carrier
 - `GET /api/carriers/rates` - Get shipping rates
 - `POST /api/carriers/ship` - Create shipment with carrier
 
-### Payments
-- `POST /api/payments/create` - Create payment intent
-- `POST /api/payments/confirm` - Confirm payment
-- `GET /api/payments/history` - Payment history
+### Analytics
+- `GET /api/greenscreens/analytics/metrics` - Get shipping metrics
+- `GET /api/greenscreens/analytics/carriers` - Get carrier performance
+- `GET /api/greenscreens/analytics/routes` - Get route efficiency
 
-## 🚀 Deployment
+## Deployment
 
 ### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
 
-### Other Platforms
-The app is compatible with any platform that supports Next.js:
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Set environment variables in Vercel dashboard
+4. Deploy
 
-## 🤝 Contributing
+### Docker
+
+```bash
+# Build the image
+docker build -t exodus-logistix .
+
+# Run the container
+docker run -p 3000:3000 exodus-logistix
+```
+
+### Manual Deployment
+
+1. Build the application:
+```bash
+npm run build
+```
+
+2. Start the production server:
+```bash
+npm start
+```
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -am 'Add feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Support
+## Support
 
-If you have any questions or need help:
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Contact the development team
 
-1. Check the [Issues](https://github.com/rahmivinnn/Exodus-Webapp/issues) page
-2. Create a new issue with detailed description
-3. Contact the development team
+## Roadmap
 
-## 🎯 Roadmap
-
-- [ ] Mobile app (React Native)
-- [ ] Advanced analytics with ML
-- [ ] Multi-language support
-- [ ] Advanced reporting features
+- [ ] Mobile app development
+- [ ] Advanced AI-powered route optimization
 - [ ] Integration with more carriers
-- [ ] Real-time notifications
-- [ ] Advanced route optimization
+- [ ] Real-time collaboration features
+- [ ] Advanced reporting and analytics
+- [ ] Multi-language support
 
 ---
 
-**Built with ❤️ by the Exodus Logistix Team**
-
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma)](https://prisma.io/)
+Built with ❤️ for the logistics industry

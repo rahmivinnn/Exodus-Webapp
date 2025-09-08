@@ -101,3 +101,6 @@ export function getEnvironmentConfig(): {
 export type EquipmentType = typeof EQUIPMENT_TYPES[keyof typeof EQUIPMENT_TYPES];
 export type MarketActivity = typeof MARKET_ACTIVITY[keyof typeof MARKET_ACTIVITY];
 export type RateTrend = typeof RATE_TRENDS[keyof typeof RATE_TRENDS];
+
+// Export getConfig function for backward compatibility
+export const getConfig = () => greenscreensConfig;
