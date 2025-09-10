@@ -16,17 +16,16 @@ export function RateCalculator() {
   const [weight, setWeight] = useState("")
   const [distance, setDistance] = useState("")
 
-  const { data: rateData, loading, error, fetchRatePrediction } = useRatePrediction()
+  const { data: rateData, loading, error, refetch } = useRatePrediction({
+    origin,
+    destination,
+    equipment: equipmentType,
+    enabled: false
+  })
 
   const handleCalculate = () => {
     if (origin && destination && equipmentType && weight && distance) {
-      fetchRatePrediction({
-        origin,
-        destination,
-        equipment_type: equipmentType,
-        weight: parseFloat(weight),
-        distance: parseFloat(distance)
-      })
+      refetch()
     }
   }
 
@@ -130,22 +129,16 @@ export function RateCalculator() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-green-600">Predicted Rate:</span>
-                <p className="font-bold text-lg">${rateData.predicted_rate?.toLocaleString()}</p>
+                <p className="font-bold text-lg">${rateData.predictedRate?.toLocaleString()}</p>
               </div>
               <div>
                 <span className="text-green-600">Confidence:</span>
                 <p className="font-bold">{(rateData.confidence * 100).toFixed(1)}%</p>
               </div>
-              {rateData.market_factors && (
-                <div className="col-span-2">
-                  <span className="text-green-600">Market Factors:</span>
-                  <ul className="list-disc list-inside mt-1">
-                    {rateData.market_factors.map((factor, index) => (
-                      <li key={index} className="text-green-700">{factor}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div className="col-span-2">
+                <span className="text-green-600">Market Activity:</span>
+                <p className="font-bold capitalize">{rateData.marketActivity}</p>
+              </div>
             </div>
           </div>
         )}

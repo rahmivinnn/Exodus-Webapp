@@ -1287,3 +1287,6 @@ export type {
 };
 
 export { GreenscreensAPI };
+
+// Export greenscreensApi for backward compatibility
+export const greenscreensApi = getGreenscreensAPI;
