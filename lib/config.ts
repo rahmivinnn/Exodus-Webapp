@@ -1,5 +1,5 @@
 /**
- * Configuration for Greenscreens.ai API integration
+ * Configuration for Greenscreens.ai API integration and MongoDB
  */
 
 import { GreenscreensConfig } from './greenscreens-api';
@@ -8,6 +8,21 @@ import { GreenscreensConfig } from './greenscreens-api';
 const GREENSCREENS_API_KEY = process.env.GREENSCREENS_API_KEY || process.env.NEXT_PUBLIC_GREENSCREENS_API_KEY;
 const GREENSCREENS_BASE_URL = process.env.GREENSCREENS_BASE_URL || 'https://connect.greenscreens.ai';
 const GREENSCREENS_TIMEOUT = parseInt(process.env.GREENSCREENS_TIMEOUT || '10000');
+
+// MongoDB configuration
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const MONGODB_DB = process.env.MONGODB_DB || 'exodus_logistics';
+
+// API Key configuration
+const TEST_API_KEY = process.env.TEST_API_KEY || 'exodus_test_key_1234567890abcdef';
+const TEST_USER_ID = process.env.TEST_USER_ID || 'test-user-id';
+
+// Rate limiting configuration
+const API_RATE_LIMIT = parseInt(process.env.API_RATE_LIMIT || '1000');
+const API_RATE_WINDOW = parseInt(process.env.API_RATE_WINDOW || '900000'); // 15 minutes
+
+// CORS configuration
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 // Validate required environment variables
 if (!GREENSCREENS_API_KEY) {
@@ -80,12 +95,35 @@ export function validateConfig(): boolean {
   return true;
 }
 
+// MongoDB configuration object
+export const mongoConfig = {
+  uri: MONGODB_URI,
+  db: MONGODB_DB,
+};
+
+// API Key configuration object
+export const apiKeyConfig = {
+  testApiKey: TEST_API_KEY,
+  testUserId: TEST_USER_ID,
+  rateLimit: API_RATE_LIMIT,
+  rateWindow: API_RATE_WINDOW,
+};
+
+// CORS configuration object
+export const corsConfig = {
+  origin: CORS_ORIGIN.split(',').map(origin => origin.trim()),
+};
+
 // Helper function to get environment-specific configuration
 export function getEnvironmentConfig(): {
   isDevelopment: boolean;
   isProduction: boolean;
   apiKey: string;
   baseUrl: string;
+  mongoUri: string;
+  mongoDb: string;
+  testApiKey: string;
+  testUserId: string;
 } {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isProduction = process.env.NODE_ENV === 'production';
@@ -95,6 +133,10 @@ export function getEnvironmentConfig(): {
     isProduction,
     apiKey: greenscreensConfig.apiKey,
     baseUrl: greenscreensConfig.baseUrl,
+    mongoUri: mongoConfig.uri,
+    mongoDb: mongoConfig.db,
+    testApiKey: apiKeyConfig.testApiKey,
+    testUserId: apiKeyConfig.testUserId,
   };
 }
 
