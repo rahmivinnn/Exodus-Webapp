@@ -2,6 +2,51 @@
 
 A comprehensive freight management and logistics platform built with Next.js 15, featuring real-time tracking, rate calculation, carrier integration, and advanced analytics.
 
+## 📸 Screenshots
+
+### 🏠 Home Page
+![Home Page](https://via.placeholder.com/1200x600/1e40af/ffffff?text=Exodus+Logistix+Home+Page)
+*Main landing page with hero section, services overview, and rate calculator*
+
+### 🚢 Shipping Dashboard
+![Shipping Dashboard](https://via.placeholder.com/1200x600/059669/ffffff?text=Shipping+Dashboard)
+*Comprehensive shipping management interface with real-time tracking*
+
+### 📊 Analytics Dashboard
+![Analytics Dashboard](https://via.placeholder.com/1200x600/7c3aed/ffffff?text=Analytics+Dashboard)
+*Advanced analytics and reporting with market intelligence*
+
+### 🔐 Login Page
+![Login Page](https://via.placeholder.com/1200x600/dc2626/ffffff?text=Login+Page)
+*Secure authentication with JWT tokens and role-based access*
+
+### 📱 Mobile Responsive
+![Mobile View](https://via.placeholder.com/400x800/0891b2/ffffff?text=Mobile+View)
+*Fully responsive design optimized for all devices*
+
+## 🎨 UI/UX Features
+
+### Modern Design System
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **Radix UI**: Accessible, unstyled UI components
+- **Lucide Icons**: Beautiful, customizable SVG icons
+- **Responsive Design**: Mobile-first approach with breakpoint optimization
+
+### Key Visual Components
+- **Hero Section**: Eye-catching banner with call-to-action buttons
+- **Service Cards**: Interactive cards showcasing different freight services
+- **Rate Calculator**: Real-time freight rate calculation tool
+- **Market Dashboard**: Live market intelligence and trends
+- **Shipment Tracker**: Real-time tracking with status updates
+- **Analytics Charts**: Interactive data visualization
+- **Notification System**: Toast notifications and alerts
+
+### Color Scheme
+- **Primary**: Teal (#14b8a6) - Trust and reliability
+- **Secondary**: Green (#10b981) - Growth and success
+- **Accent**: Blue (#3b82f6) - Technology and innovation
+- **Neutral**: Gray scale for text and backgrounds
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -74,6 +119,21 @@ A comprehensive freight management and logistics platform built with Next.js 15,
 
 6. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+7. **Explore the application**
+   - **Home Page**: View the main landing page with hero section and services
+   - **Shipping Page**: Access the comprehensive shipping dashboard at `/shipping`
+   - **Rate Calculator**: Use the interactive rate calculation tool
+   - **Market Intelligence**: View real-time market trends and analytics
+   - **Authentication**: Test login/register functionality (requires database setup)
+
+### 🖼️ Visual Preview
+Once running, you'll see:
+- **Modern UI**: Clean, professional design with smooth animations
+- **Interactive Components**: Hover effects, loading states, and transitions
+- **Responsive Layout**: Adapts perfectly to desktop, tablet, and mobile
+- **Real-time Features**: Live data updates and notifications
+- **Professional Branding**: Exodus Logistix branding throughout
 
 ## 🏠 Home Page & Navigation
 

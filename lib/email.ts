@@ -439,3 +439,6 @@ export class EmailService {
 EmailService.initialize().catch(console.error);
 
 export default EmailService;
+
+// Export emailService for backward compatibility
+export const emailService = EmailService;
