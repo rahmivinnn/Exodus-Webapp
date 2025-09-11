@@ -84,6 +84,9 @@ export function Header() {
               <div className="w-6 h-6 border border-gray-300 rounded-full flex items-center justify-center">
                 <span className="text-xs">🌐</span>
               </div>
+              <Button variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white">
+                <Link href="/login">Sign In</Link>
+              </Button>
               <Button className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6">Request a Quote</Button>
             </div>
           </nav>
