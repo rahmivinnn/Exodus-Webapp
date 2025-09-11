@@ -1243,6 +1243,8 @@ export function getGreenscreensAPI(): GreenscreensAPI {
   return greenscreensAPI;
 }
 
+export const greenscreensApi = getGreenscreensAPI;
+
 export type {
   GreenscreensConfig,
   RatePrediction,

@@ -3,13 +3,7 @@ import { z } from 'zod';
 import { carrierService } from '@/lib/carriers';
 import { authService } from '@/lib/auth';
 import { prisma } from '@/lib/database';
-import { rateLimit } from '@/lib/rate-limit';
-
-// Rate limiting
-const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 500,
-});
+import { checkRateLimit } from '@/lib/rate-limit';
 
 // Validation schemas
 const trackRequestSchema = z.object({
@@ -28,13 +22,28 @@ const bulkTrackRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
-    await limiter.check(request, 20, 'CACHE_TOKEN');
+    const clientId = request.headers.get('x-forwarded-for') || 'unknown';
+    const { allowed } = checkRateLimit(clientId, 20, 60 * 1000);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 }
+      );
+    }
 
     // Authentication
-    const user = await authService.getCurrentUser(request);
-    if (!user) {
+    const token = authService.extractTokenFromRequest(request);
+    if (!token) {
       return NextResponse.json(
         { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    const user = await authService.getUserFromToken(token);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
         { status: 401 }
       );
     }
@@ -107,13 +116,28 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // Rate limiting
-    await limiter.check(request, 30, 'CACHE_TOKEN');
+    const clientId = request.headers.get('x-forwarded-for') || 'unknown';
+    const { allowed } = checkRateLimit(clientId, 30, 60 * 1000);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 }
+      );
+    }
 
     // Authentication
-    const user = await authService.getCurrentUser(request);
-    if (!user) {
+    const token = authService.extractTokenFromRequest(request);
+    if (!token) {
       return NextResponse.json(
         { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    const user = await authService.getUserFromToken(token);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Invalid or expired token' },
         { status: 401 }
       );
     }
