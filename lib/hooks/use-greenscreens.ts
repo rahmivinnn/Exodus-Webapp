@@ -1,0 +1,1 @@
+﻿export function useRatePrediction() { return { data: null, loading: false, error: null, fetchRatePrediction: async (params) => { console.log('Rate prediction called with:', params); return Promise.resolve(); } }; }
