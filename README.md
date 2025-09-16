@@ -2,6 +2,16 @@
 
 A comprehensive freight management platform built with Next.js, featuring carrier integration, shipment tracking, and analytics.
 
+## 🚀 Quick Deploy
+
+**Your app is now auto-deployed!** Choose your preferred platform:
+
+- **🌐 GitHub Pages**: `https://rahmivinnn.github.io/Exodus-Webapp` (Free, Static)
+- **🌐 Netlify**: Connect your GitHub repo for full-stack deployment
+- **🚂 Railway**: Connect your GitHub repo for full-stack with database
+
+📚 **See [ALTERNATIVE_DEPLOYMENT.md](./ALTERNATIVE_DEPLOYMENT.md) for detailed setup instructions**
+
 ## Features
 
 - 🚛 Carrier Management & Integration
