@@ -16,7 +16,11 @@ export function RateCalculator() {
   const [weight, setWeight] = useState("")
   const [distance, setDistance] = useState("")
 
-  const { data: rateData, loading, error, fetchRatePrediction } = useRatePrediction()
+  const { data: rateData, loading, error, fetchRatePrediction } = useRatePrediction({
+    origin: '',
+    destination: '',
+    enabled: false
+  })
 
   const handleCalculate = () => {
     if (origin && destination && equipmentType && weight && distance) {

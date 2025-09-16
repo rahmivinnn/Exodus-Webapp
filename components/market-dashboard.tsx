@@ -13,8 +13,16 @@ export function MarketDashboard() {
   const [destination, setDestination] = useState("")
   const [region, setRegion] = useState("")
 
-  const { data: marketData, loading: marketLoading, error: marketError, fetchMarketIntelligence } = useMarketIntelligence()
-  const { data: trendsData, loading: trendsLoading, error: trendsError, fetchMarketTrends } = useMarketTrends()
+  const { data: marketData, loading: marketLoading, error: marketError, fetchMarketIntelligence } = useMarketIntelligence({
+    origin: '',
+    destination: '',
+    enabled: false
+  })
+  const { data: trendsData, loading: trendsLoading, error: trendsError, fetchMarketTrends } = useMarketTrends({
+    origin: '',
+    destination: '',
+    enabled: false
+  })
 
   useEffect(() => {
     // Load general market trends on component mount

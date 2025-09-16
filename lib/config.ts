@@ -5,9 +5,9 @@
 import { GreenscreensConfig } from './greenscreens-api';
 
 // Environment variables for Greenscreens.ai API
-const GREENSCREENS_API_KEY = process.env.GREENSCREENS_API_KEY || process.env.NEXT_PUBLIC_GREENSCREENS_API_KEY;
-const GREENSCREENS_BASE_URL = process.env.GREENSCREENS_BASE_URL || 'https://connect.greenscreens.ai';
-const GREENSCREENS_TIMEOUT = parseInt(process.env.GREENSCREENS_TIMEOUT || '10000');
+const GREENSCREENS_API_KEY = (typeof window === 'undefined' ? process.env.GREENSCREENS_API_KEY : process.env.NEXT_PUBLIC_GREENSCREENS_API_KEY) || '';
+const GREENSCREENS_BASE_URL = (typeof window === 'undefined' ? process.env.GREENSCREENS_BASE_URL : process.env.NEXT_PUBLIC_GREENSCREENS_BASE_URL) || 'https://connect.greenscreens.ai';
+const GREENSCREENS_TIMEOUT = parseInt((typeof window === 'undefined' ? process.env.GREENSCREENS_TIMEOUT : process.env.NEXT_PUBLIC_GREENSCREENS_TIMEOUT) || '10000');
 
 // Validate required environment variables
 if (!GREENSCREENS_API_KEY) {

@@ -45,6 +45,12 @@ export function useRatePrediction(options: UseRatePredictionOptions = {}) {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      // Check if we're in browser environment
+      if (typeof window === 'undefined') {
+        setState(prev => ({ ...prev, loading: false, error: 'Not available on server side' }));
+        return;
+      }
+
       const params = new URLSearchParams({
         origin,
         destination,
@@ -97,6 +103,12 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions = {}
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      // Check if we're in browser environment
+      if (typeof window === 'undefined') {
+        setState(prev => ({ ...prev, loading: false, error: 'Not available on server side' }));
+        return;
+      }
+
       const params = new URLSearchParams({
         origin,
         destination,
@@ -202,6 +214,12 @@ export function useMarketTrends(options: UseMarketIntelligenceOptions = {}) {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      // Check if we're in browser environment
+      if (typeof window === 'undefined') {
+        setState(prev => ({ ...prev, loading: false, error: 'Not available on server side' }));
+        return;
+      }
+
       const params = new URLSearchParams({
         type: 'trends',
         ...(region && { region }),
