@@ -9,10 +9,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  output: 'export',
-  trailingSlash: true,
-  basePath: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
+  // Remove static export for now to fix client-side issues
+  // output: 'export',
+  // trailingSlash: true,
+  // basePath: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
+  // assetPrefix: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
 }
 
 export default nextConfig

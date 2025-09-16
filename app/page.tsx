@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Truck, Shield, Clock, Users, Star, CheckCircle, Award } from "lucide-react"
 import Image from "next/image"
-import { RateCalculator } from "@/components/rate-calculator"
-import { MarketDashboard } from "@/components/market-dashboard"
+import { RateCalculator } from "@/components/rate-calculator-safe"
+import { MarketDashboard } from "@/components/market-dashboard-safe"
 
 export default function HomePage() {
   return (
