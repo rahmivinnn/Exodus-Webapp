@@ -303,3 +303,4 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 export default AuthService;
+export { AuthService as authService };

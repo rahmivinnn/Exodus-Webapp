@@ -30,14 +30,14 @@ interface ApiState<T> {
 /**
  * Hook for fetching rate predictions from Greenscreens.ai
  */
-export function useRatePrediction(options: UseRatePredictionOptions) {
+export function useRatePrediction(options: UseRatePredictionOptions = {}) {
   const [state, setState] = useState<ApiState<RatePrediction>>({
     data: null,
     loading: false,
     error: null,
   });
 
-  const { origin, destination, equipment = 'van', enabled = true } = options;
+  const { origin = '', destination = '', equipment = 'van', enabled = true } = options;
 
   const fetchRatePrediction = useCallback(async () => {
     if (!enabled || !origin || !destination) return;
@@ -82,14 +82,14 @@ export function useRatePrediction(options: UseRatePredictionOptions) {
 /**
  * Hook for fetching market intelligence from Greenscreens.ai
  */
-export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
+export function useMarketIntelligence(options: UseMarketIntelligenceOptions = {}) {
   const [state, setState] = useState<ApiState<MarketIntelligence>>({
     data: null,
     loading: false,
     error: null,
   });
 
-  const { origin, destination, enabled = true } = options;
+  const { origin = '', destination = '', enabled = true } = options;
 
   const fetchMarketIntelligence = useCallback(async () => {
     if (!enabled || !origin || !destination) return;
@@ -187,13 +187,15 @@ export function useCarrierBids(options: UseCarrierBidsOptions) {
 /**
  * Hook for fetching market trends from Greenscreens.ai
  */
-export function useMarketTrends(region?: string, enabled = true) {
+export function useMarketTrends(options: UseMarketIntelligenceOptions = {}) {
   const [state, setState] = useState<ApiState<{ trends: MarketIntelligence[] }>>({
     data: null,
     loading: false,
     error: null,
   });
 
+  const { region = '', enabled = true } = options;
+  
   const fetchMarketTrends = useCallback(async () => {
     if (!enabled) return;
 

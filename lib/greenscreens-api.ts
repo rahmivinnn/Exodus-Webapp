@@ -1287,3 +1287,4 @@ export type {
 };
 
 export { GreenscreensAPI };
+export { GreenscreensAPI as greenscreensApi };

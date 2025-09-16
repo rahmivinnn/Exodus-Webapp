@@ -439,3 +439,4 @@ export class EmailService {
 EmailService.initialize().catch(console.error);
 
 export default EmailService;
+export { EmailService as emailService };
