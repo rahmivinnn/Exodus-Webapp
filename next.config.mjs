@@ -9,11 +9,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Remove static export for now to fix client-side issues
-  // output: 'export',
-  // trailingSlash: true,
-  // basePath: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
-  // assetPrefix: process.env.NODE_ENV === 'production' ? '/Exodus-Webapp' : '',
+  // Vercel-optimized configuration
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
+  // Ensure proper build output
+  output: 'standalone',
 }
 
 export default nextConfig
