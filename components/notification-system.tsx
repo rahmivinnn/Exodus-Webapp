@@ -85,17 +85,19 @@ export function NotificationSystem({ onNotificationClick }: NotificationSystemPr
 
   const getNotificationIcon = (type: NotificationType) => {
     switch (type) {
-      case 'shipment_update':
+      case 'shipment_created':
+      case 'shipment_picked_up':
+      case 'shipment_in_transit':
+      case 'shipment_delivered':
         return '📦'
-      case 'delivery_confirmation':
-        return '✅'
-      case 'delay_alert':
+      case 'shipment_delayed':
+      case 'shipment_exception':
         return '⚠️'
-      case 'route_optimization':
+      case 'route_optimized':
         return '🗺️'
-      case 'carrier_update':
+      case 'carrier_assigned':
         return '🚛'
-      case 'system_alert':
+      case 'system_maintenance':
         return '🔔'
       default:
         return '📢'
@@ -104,17 +106,19 @@ export function NotificationSystem({ onNotificationClick }: NotificationSystemPr
 
   const getNotificationColor = (type: NotificationType) => {
     switch (type) {
-      case 'shipment_update':
+      case 'shipment_created':
+      case 'shipment_picked_up':
+      case 'shipment_in_transit':
+      case 'shipment_delivered':
         return 'bg-blue-100 text-blue-800'
-      case 'delivery_confirmation':
-        return 'bg-green-100 text-green-800'
-      case 'delay_alert':
+      case 'shipment_delayed':
+      case 'shipment_exception':
         return 'bg-red-100 text-red-800'
-      case 'route_optimization':
+      case 'route_optimized':
         return 'bg-purple-100 text-purple-800'
-      case 'carrier_update':
+      case 'carrier_assigned':
         return 'bg-orange-100 text-orange-800'
-      case 'system_alert':
+      case 'system_maintenance':
         return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-blue-100 text-blue-800'
@@ -294,8 +298,8 @@ export function NotificationSystem({ onNotificationClick }: NotificationSystemPr
         </div>
       )}
 
-      {/* Error Display */}
-      {error && (
+      {/* Error Display - Only show if there's a real error, not just empty notifications */}
+      {error && error !== 'Greenscreens.ai API not configured' && (
         <Alert>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -315,7 +319,18 @@ export function NotificationSystem({ onNotificationClick }: NotificationSystemPr
           <ScrollArea className="h-96">
             {filteredNotifications.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                {filter === 'unread' ? 'No unread notifications' : 'No notifications'}
+                <div className="flex flex-col items-center space-y-2">
+                  <Bell className="h-12 w-12 text-muted-foreground/50" />
+                  <p className="text-lg font-medium">
+                    {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
+                  </p>
+                  <p className="text-sm">
+                    {filter === 'unread' 
+                      ? 'All caught up! Check back later for new updates.'
+                      : 'You\'ll see notifications here when shipments are created or updated.'
+                    }
+                  </p>
+                </div>
               </div>
             ) : (
               <div className="space-y-2">
@@ -416,6 +431,25 @@ export function NotificationSystem({ onNotificationClick }: NotificationSystemPr
           Last updated: {new Date().toLocaleTimeString()}
         </span>
       </div>
+      
+      {/* API Configuration Notice */}
+      {typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_GREENSCREENS_API_KEY && (
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-start space-x-2">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="text-sm">
+              <p className="text-blue-800 font-medium">API Not Configured</p>
+              <p className="text-blue-700">
+                To see real notifications, configure the Greenscreens.ai API key in your environment variables.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
