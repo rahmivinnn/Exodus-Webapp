@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGreenscreensAPI } from '@/lib/greenscreens-api';
+import { initializeGreenscreensAPI } from '@/lib/greenscreens-api';
+import { greenscreensConfig } from '@/lib/config';
+
+// Initialize the Greenscreens API
+const greenscreensAPI = initializeGreenscreensAPI(greenscreensConfig);
 
 export async function GET(request: NextRequest) {
   try {
-    const greenscreensAPI = getGreenscreensAPI();
     const result = await greenscreensAPI.validateConnection();
 
     if (!result.success) {
