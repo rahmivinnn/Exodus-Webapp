@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Image from "next/image"
+import { ExodusLogo } from "@/components/logo"
 
 export function Header() {
   return (
@@ -12,13 +12,14 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
-            <Image
-              src="/placeholder-logo.svg"
-              alt="Exodus Logistix"
-              width={180}
-              height={40}
-              className="h-10 w-auto"
-            />
+            {/* Desktop Logo */}
+            <div className="hidden md:block">
+              <ExodusLogo className="h-12" />
+            </div>
+            {/* Mobile Logo */}
+            <div className="md:hidden">
+              <ExodusLogoSimple className="h-10" />
+            </div>
           </Link>
 
           {/* Navigation */}

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react"
+import { ExodusLogoSimple } from "@/components/logo"
 
 export function Footer() {
   return (
@@ -8,15 +9,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-white flex items-center justify-center">
-                <span className="text-teal-800 font-bold text-lg">X</span>
-              </div>
-              <div className="text-xl font-bold">
-                EXODUS
-                <br />
-                <span className="text-sm font-normal">LOGISTIX</span>
-              </div>
+            <div className="mb-4">
+              <ExodusLogoSimple className="text-white" />
             </div>
             <p className="text-sm text-gray-300 mb-6">
               Lorem ipsum dolor sit amet consectetur. Vestibulum augue sit libero amet laoreet etiam mattis cras

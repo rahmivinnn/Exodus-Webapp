@@ -1,0 +1,22 @@
+<svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Logo Icon -->
+  <g transform="translate(0, 4)">
+    <rect x="0" y="0" width="20" height="20" rx="4" fill="url(#gradient)"/>
+    <path d="M5 10L10 5L15 10V15L10 20L5 15V10Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 5V20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Logo Text -->
+  <g transform="translate(28, 0)">
+    <text x="0" y="14" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1f2937">EXODUS</text>
+    <text x="0" y="26" font-family="Arial, sans-serif" font-size="9" font-weight="600" fill="#0d9488">LOGISTIX</text>
+  </g>
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
