@@ -1,5 +1,5 @@
 /**
- * Configuration for Greenscreens.ai API integration
+ * Clean configuration for Greenscreens.ai API integration
  */
 
 import { GreenscreensConfig } from './greenscreens-api';
@@ -14,32 +14,10 @@ if (!GREENSCREENS_API_KEY) {
   console.warn('Warning: GREENSCREENS_API_KEY environment variable is not set');
 }
 
-// Initialize API on module load
-let apiInitialized = false;
-
 // Default configuration for Greenscreens.ai API
 export const greenscreensConfig: GreenscreensConfig = {
   apiKey: GREENSCREENS_API_KEY || '',
   baseUrl: GREENSCREENS_BASE_URL,
-  timeout: GREENSCREENS_TIMEOUT,
-};
-
-// API endpoints configuration
-export const API_ENDPOINTS = {
-  RATE_PREDICTION: '/api/v1/rates/predict',
-  MARKET_INTELLIGENCE: '/api/v1/market/intelligence',
-  CARRIER_BIDS: '/api/v1/carriers/bids',
-  BATCH_RATES: '/api/v1/rates/batch',
-  MARKET_TRENDS: '/api/v1/market/trends',
-  HEALTH_CHECK: '/api/v1/health',
-} as const;
-
-// Default request configuration
-export const DEFAULT_REQUEST_CONFIG = {
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
   timeout: GREENSCREENS_TIMEOUT,
 };
 
@@ -49,9 +27,6 @@ export const EQUIPMENT_TYPES = {
   REEFER: 'reefer',
   FLATBED: 'flatbed',
   STEP_DECK: 'step_deck',
-  LOWBOY: 'lowboy',
-  TANKER: 'tanker',
-  CONTAINER: 'container',
 } as const;
 
 // Market activity levels
@@ -81,15 +56,6 @@ export function validateConfig(): boolean {
   }
   
   return true;
-}
-
-// Initialize API function
-export function initializeAPI(): boolean {
-  if (!apiInitialized && validateConfig()) {
-    apiInitialized = true;
-    return true;
-  }
-  return apiInitialized;
 }
 
 // Helper function to get environment-specific configuration

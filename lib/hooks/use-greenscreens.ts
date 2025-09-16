@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import type { RatePrediction, MarketIntelligence, CarrierBid, QuoteRequest } from '@/lib/greenscreens-api';
+import { useState, useEffect, useCallback } from 'react';
+import type { RatePrediction, MarketIntelligence, QuoteRequest } from '@/lib/greenscreens-api';
 
 interface UseRatePredictionOptions {
   origin: string;
@@ -13,11 +13,6 @@ interface UseRatePredictionOptions {
 interface UseMarketIntelligenceOptions {
   origin: string;
   destination: string;
-  enabled?: boolean;
-}
-
-interface UseCarrierBidsOptions {
-  quoteRequest: QuoteRequest;
   enabled?: boolean;
 }
 
@@ -184,59 +179,6 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
   return {
     ...state,
     refetch: fetchMarketIntelligence,
-  };
-}
-
-/**
- * Hook for fetching carrier bids from Greenscreens.ai
- */
-export function useCarrierBids(options: UseCarrierBidsOptions) {
-  const [state, setState] = useState<ApiState<CarrierBid[]>>({
-    data: null,
-    loading: false,
-    error: null,
-  });
-
-  const { quoteRequest, enabled = true } = options;
-
-  const fetchCarrierBids = useCallback(async () => {
-    if (!enabled || !quoteRequest.origin || !quoteRequest.destination) return;
-
-    setState(prev => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await fetch('/api/greenscreens/carriers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(quoteRequest),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch carrier bids');
-      }
-
-      const data = await response.json();
-      setState({ data, loading: false, error: null });
-    } catch (error) {
-      setState({
-        data: null,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      });
-    }
-  }, [quoteRequest, enabled]);
-
-  const requestBids = useCallback(() => {
-    fetchCarrierBids();
-  }, [fetchCarrierBids]);
-
-  return {
-    ...state,
-    requestBids,
-    refetch: fetchCarrierBids,
   };
 }
 

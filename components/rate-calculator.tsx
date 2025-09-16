@@ -8,13 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRatePrediction } from "@/lib/hooks/use-greenscreens"
 import { ErrorBoundary } from "@/components/error-boundary"
-import type { EquipmentType } from "@/types/api"
 import { Loader2, Truck, DollarSign, AlertCircle } from "lucide-react"
 
 export function RateCalculator() {
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("")
-  const [equipmentType, setEquipmentType] = useState<EquipmentType | "">("")
+  const [equipmentType, setEquipmentType] = useState("")
   const [weight, setWeight] = useState("")
   const [distance, setDistance] = useState("")
 
