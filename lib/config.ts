@@ -14,6 +14,9 @@ if (!GREENSCREENS_API_KEY) {
   console.warn('Warning: GREENSCREENS_API_KEY environment variable is not set');
 }
 
+// Initialize API on module load
+let apiInitialized = false;
+
 // Default configuration for Greenscreens.ai API
 export const greenscreensConfig: GreenscreensConfig = {
   apiKey: GREENSCREENS_API_KEY || '',
@@ -80,6 +83,15 @@ export function validateConfig(): boolean {
   return true;
 }
 
+// Initialize API function
+export function initializeAPI(): boolean {
+  if (!apiInitialized && validateConfig()) {
+    apiInitialized = true;
+    return true;
+  }
+  return apiInitialized;
+}
+
 // Helper function to get environment-specific configuration
 export function getEnvironmentConfig(): {
   isDevelopment: boolean;
@@ -101,3 +113,6 @@ export function getEnvironmentConfig(): {
 export type EquipmentType = typeof EQUIPMENT_TYPES[keyof typeof EQUIPMENT_TYPES];
 export type MarketActivity = typeof MARKET_ACTIVITY[keyof typeof MARKET_ACTIVITY];
 export type RateTrend = typeof RATE_TRENDS[keyof typeof RATE_TRENDS];
+
+// Export alias for compatibility
+export const getConfig = getEnvironmentConfig;

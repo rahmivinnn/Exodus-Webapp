@@ -302,4 +302,6 @@ setInterval(() => {
   SessionService.cleanupExpiredSessions();
 }, 60 * 60 * 1000);
 
+// Export service instance for compatibility
+export const authService = AuthService;
 export default AuthService;

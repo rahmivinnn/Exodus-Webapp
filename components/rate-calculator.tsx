@@ -1,37 +1,43 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRatePrediction } from "@/lib/hooks/use-greenscreens"
-import { Loader2, Truck, DollarSign } from "lucide-react"
+import { ErrorBoundary } from "@/components/error-boundary"
+import type { EquipmentType } from "@/types/api"
+import { Loader2, Truck, DollarSign, AlertCircle } from "lucide-react"
 
 export function RateCalculator() {
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("")
-  const [equipmentType, setEquipmentType] = useState("")
+  const [equipmentType, setEquipmentType] = useState<EquipmentType | "">("")
   const [weight, setWeight] = useState("")
   const [distance, setDistance] = useState("")
 
-  const { data: rateData, loading, error, fetchRatePrediction } = useRatePrediction()
+  const { data: rateData, loading, error, refetch } = useRatePrediction({
+    origin,
+    destination,
+    equipment: equipmentType,
+    enabled: false
+  })
 
-  const handleCalculate = () => {
+  const handleCalculate = useCallback(() => {
     if (origin && destination && equipmentType && weight && distance) {
-      fetchRatePrediction({
-        origin,
-        destination,
-        equipment_type: equipmentType,
-        weight: parseFloat(weight),
-        distance: parseFloat(distance)
-      })
+      refetch()
     }
-  }
+  }, [origin, destination, equipmentType, weight, distance, refetch])
+
+  const isFormValid = useMemo(() => {
+    return !!(origin && destination && equipmentType && weight && distance)
+  }, [origin, destination, equipmentType, weight, distance])
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <ErrorBoundary>
+      <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Truck className="h-5 w-5" />
@@ -103,7 +109,7 @@ export function RateCalculator() {
         <Button 
           onClick={handleCalculate} 
           className="w-full" 
-          disabled={loading || !origin || !destination || !equipmentType || !weight || !distance}
+          disabled={loading || !isFormValid}
         >
           {loading ? (
             <>
@@ -120,7 +126,19 @@ export function RateCalculator() {
 
         {error && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-700 text-sm">{error}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <p className="text-red-700 font-medium text-sm">Error calculating rate</p>
+            </div>
+            <p className="text-red-600 text-sm">{error}</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-2 border-red-300 text-red-700 hover:bg-red-50"
+              onClick={handleCalculate}
+            >
+              Try Again
+            </Button>
           </div>
         )}
 
@@ -130,26 +148,33 @@ export function RateCalculator() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-green-600">Predicted Rate:</span>
-                <p className="font-bold text-lg">${rateData.predicted_rate?.toLocaleString()}</p>
+                <p className="font-bold text-lg">${rateData.predictedRate?.toLocaleString()}</p>
+              </div>
+              <div>
+                <span className="text-green-600">Network Rate:</span>
+                <p className="font-bold text-lg">${rateData.networkRate?.toLocaleString()}</p>
               </div>
               <div>
                 <span className="text-green-600">Confidence:</span>
                 <p className="font-bold">{(rateData.confidence * 100).toFixed(1)}%</p>
               </div>
-              {rateData.market_factors && (
-                <div className="col-span-2">
-                  <span className="text-green-600">Market Factors:</span>
-                  <ul className="list-disc list-inside mt-1">
-                    {rateData.market_factors.map((factor, index) => (
-                      <li key={index} className="text-green-700">{factor}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div>
+                <span className="text-green-600">Market Activity:</span>
+                <p className="font-bold">{rateData.marketActivity || 'Unknown'}</p>
+              </div>
+              <div className="col-span-2">
+                <span className="text-green-600">Lane:</span>
+                <p className="font-bold">{rateData.lane || 'N/A'}</p>
+              </div>
+              <div className="col-span-2">
+                <span className="text-green-600">Last Updated:</span>
+                <p className="font-bold">{rateData.lastUpdated || 'N/A'}</p>
+              </div>
             </div>
           </div>
         )}
       </CardContent>
     </Card>
+    </ErrorBoundary>
   )
 }

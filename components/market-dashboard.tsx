@@ -1,34 +1,44 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useMarketIntelligence, useMarketTrends } from "@/lib/hooks/use-greenscreens"
-import { TrendingUp, TrendingDown, BarChart3, MapPin, Loader2 } from "lucide-react"
+import { ErrorBoundary } from "@/components/error-boundary"
+import { TrendingUp, TrendingDown, BarChart3, MapPin, Loader2, AlertCircle } from "lucide-react"
 
 export function MarketDashboard() {
   const [origin, setOrigin] = useState("")
   const [destination, setDestination] = useState("")
   const [region, setRegion] = useState("")
 
-  const { data: marketData, loading: marketLoading, error: marketError, fetchMarketIntelligence } = useMarketIntelligence()
-  const { data: trendsData, loading: trendsLoading, error: trendsError, fetchMarketTrends } = useMarketTrends()
+  const { data: marketData, loading: marketLoading, error: marketError, refetch: refetchMarketIntelligence } = useMarketIntelligence({
+    origin,
+    destination,
+    enabled: false
+  })
+  const { data: trendsData, loading: trendsLoading, error: trendsError, refetch: refetchTrends } = useMarketTrends(region)
 
   useEffect(() => {
     // Load general market trends on component mount
-    fetchMarketTrends()
-  }, [])
+    refetchTrends()
+  }, [refetchTrends])
 
-  const handleMarketSearch = () => {
+  const handleMarketSearch = useCallback(() => {
     if (origin && destination) {
-      fetchMarketIntelligence({ origin, destination, region })
+      refetchMarketIntelligence()
     }
-  }
+  }, [origin, destination, refetchMarketIntelligence])
+
+  const isMarketFormValid = useMemo(() => {
+    return !!(origin && destination)
+  }, [origin, destination])
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary>
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -71,7 +81,7 @@ export function MarketDashboard() {
           </div>
           <Button 
             onClick={handleMarketSearch} 
-            disabled={marketLoading || !origin || !destination}
+            disabled={marketLoading || !isMarketFormValid}
             className="w-full md:w-auto"
           >
             {marketLoading ? (
@@ -92,7 +102,19 @@ export function MarketDashboard() {
       {marketError && (
         <Card className="border-red-200">
           <CardContent className="pt-6">
-            <div className="text-red-700 text-sm">{marketError}</div>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <p className="text-red-700 font-medium text-sm">Error loading market data</p>
+            </div>
+            <div className="text-red-600 text-sm mb-3">{marketError}</div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-red-300 text-red-700 hover:bg-red-50"
+              onClick={handleMarketSearch}
+            >
+              Try Again
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -106,22 +128,22 @@ export function MarketDashboard() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Demand Level:</span>
-                  <span className="font-semibold">{marketData.demand_level || 'N/A'}</span>
+                  <span className="text-sm text-gray-600">Market Activity:</span>
+                  <span className="font-semibold">{marketData.marketActivity || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Capacity:</span>
-                  <span className="font-semibold">{marketData.capacity_level || 'N/A'}</span>
+                  <span className="text-sm text-gray-600">Volume:</span>
+                  <span className="font-semibold">{marketData.volume?.toLocaleString() || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Rate Trend:</span>
                   <div className="flex items-center gap-1">
-                    {marketData.rate_trend === 'up' ? (
+                    {marketData.trend === 'increasing' ? (
                       <TrendingUp className="h-4 w-4 text-green-600" />
-                    ) : marketData.rate_trend === 'down' ? (
+                    ) : marketData.trend === 'decreasing' ? (
                       <TrendingDown className="h-4 w-4 text-red-600" />
                     ) : null}
-                    <span className="font-semibold">{marketData.rate_trend || 'Stable'}</span>
+                    <span className="font-semibold">{marketData.trend || 'stable'}</span>
                   </div>
                 </div>
               </div>
@@ -135,18 +157,16 @@ export function MarketDashboard() {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Average Rate:</span>
-                  <span className="font-semibold">${marketData.average_rate?.toLocaleString() || 'N/A'}</span>
+                  <span className="text-sm text-gray-600">7-Day Average:</span>
+                  <span className="font-semibold">${marketData.averageRate7Days?.toLocaleString() || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Rate Range:</span>
-                  <span className="font-semibold">
-                    ${marketData.rate_range?.min?.toLocaleString() || 'N/A'} - ${marketData.rate_range?.max?.toLocaleString() || 'N/A'}
-                  </span>
+                  <span className="text-sm text-gray-600">30-Day Average:</span>
+                  <span className="font-semibold">${marketData.averageRate30Days?.toLocaleString() || 'N/A'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Last Updated:</span>
-                  <span className="font-semibold text-sm">{marketData.last_updated || 'N/A'}</span>
+                  <span className="text-sm text-gray-600">Lane:</span>
+                  <span className="font-semibold text-sm">{marketData.lane || 'N/A'}</span>
                 </div>
               </div>
             </CardContent>
@@ -158,15 +178,15 @@ export function MarketDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {marketData.insights && marketData.insights.length > 0 ? (
-                  marketData.insights.map((insight, index) => (
-                    <div key={index} className="text-sm text-gray-700 p-2 bg-gray-50 rounded">
-                      {insight}
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-sm text-gray-500">No insights available</div>
-                )}
+                <div className="text-sm text-gray-700 p-2 bg-gray-50 rounded">
+                  Market activity: {marketData.marketActivity || 'Unknown'}
+                </div>
+                <div className="text-sm text-gray-700 p-2 bg-gray-50 rounded">
+                  Trend direction: {marketData.trend || 'Stable'}
+                </div>
+                <div className="text-sm text-gray-700 p-2 bg-gray-50 rounded">
+                  Volume: {marketData.volume?.toLocaleString() || 'N/A'} shipments
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -187,33 +207,45 @@ export function MarketDashboard() {
               <span className="ml-2">Loading market trends...</span>
             </div>
           ) : trendsError ? (
-            <div className="text-red-700 text-sm">{trendsError}</div>
-          ) : trendsData && trendsData.length > 0 ? (
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <p className="text-red-700 font-medium text-sm">Error loading trends</p>
+              </div>
+              <div className="text-red-600 text-sm mb-3">{trendsError}</div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-red-300 text-red-700 hover:bg-red-50"
+                onClick={refetchTrends}
+              >
+                Try Again
+              </Button>
+            </div>
+          ) : trendsData && trendsData.trends && trendsData.trends.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {trendsData.map((trend, index) => (
+              {trendsData.trends.map((trend, index) => (
                 <div key={index} className="p-4 border rounded-lg">
-                  <h4 className="font-semibold mb-2">{trend.region || `Trend ${index + 1}`}</h4>
+                  <h4 className="font-semibold mb-2">{trend.lane || `Trend ${index + 1}`}</h4>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Equipment Type:</span>
-                      <span>{trend.equipment_type || 'N/A'}</span>
-                    </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Trend:</span>
                       <div className="flex items-center gap-1">
-                        {trend.direction === 'up' ? (
+                        {trend.trend === 'increasing' ? (
                           <TrendingUp className="h-3 w-3 text-green-600" />
-                        ) : trend.direction === 'down' ? (
+                        ) : trend.trend === 'decreasing' ? (
                           <TrendingDown className="h-3 w-3 text-red-600" />
                         ) : null}
-                        <span>{trend.direction || 'Stable'}</span>
+                        <span>{trend.trend || 'stable'}</span>
                       </div>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Change:</span>
-                      <span className={trend.percentage_change > 0 ? 'text-green-600' : trend.percentage_change < 0 ? 'text-red-600' : ''}>
-                        {trend.percentage_change ? `${trend.percentage_change > 0 ? '+' : ''}${trend.percentage_change}%` : 'N/A'}
-                      </span>
+                      <span className="text-gray-600">Volume:</span>
+                      <span>{trend.volume?.toLocaleString() || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">7-Day Avg:</span>
+                      <span>${trend.averageRate7Days?.toLocaleString() || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -224,6 +256,7 @@ export function MarketDashboard() {
           )}
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </ErrorBoundary>
   )
 }

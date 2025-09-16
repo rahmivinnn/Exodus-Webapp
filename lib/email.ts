@@ -56,7 +56,7 @@ export class EmailService {
     }
 
     try {
-      this.transporter = nodemailer.createTransporter(config);
+      this.transporter = nodemailer.createTransport(config);
       await this.transporter.verify();
       this.isConfigured = true;
       console.log('Email service initialized successfully');
@@ -438,4 +438,6 @@ export class EmailService {
 // Initialize email service on module load
 EmailService.initialize().catch(console.error);
 
+// Export service instance for compatibility
+export const emailService = EmailService;
 export default EmailService;

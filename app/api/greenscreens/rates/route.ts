@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initializeGreenscreensAPI } from '@/lib/greenscreens-api';
-import { greenscreensConfig, validateConfig } from '@/lib/config';
-
-// Initialize the Greenscreens API
-if (!validateConfig()) {
-  console.error('Invalid Greenscreens API configuration');
-}
-
-const greenscreensAPI = initializeGreenscreensAPI(greenscreensConfig);
+import { getGreenscreensAPI } from '@/lib/greenscreens-api';
 
 export async function GET(request: NextRequest) {
   try {
+    const greenscreensAPI = getGreenscreensAPI();
     const { searchParams } = new URL(request.url);
     const origin = searchParams.get('origin');
     const destination = searchParams.get('destination');
@@ -44,6 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const greenscreensAPI = getGreenscreensAPI();
     const body = await request.json();
     const { lanes } = body;
 

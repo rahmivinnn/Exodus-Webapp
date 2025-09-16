@@ -56,6 +56,7 @@ function getStatusText(status: ShipmentTracking['status']) {
 export default function ShippingPage() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [selectedShipmentId, setSelectedShipmentId] = useState('')
+  const [selectedShipment, setSelectedShipment] = useState<ShipmentTracking | null>(null)
   const [filters, setFilters] = useState({
     status: '',
     origin: '',

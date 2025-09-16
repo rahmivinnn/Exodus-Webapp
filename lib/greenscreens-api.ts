@@ -1238,10 +1238,19 @@ export function initializeGreenscreensAPI(config: GreenscreensConfig): Greenscre
 
 export function getGreenscreensAPI(): GreenscreensAPI {
   if (!greenscreensAPI) {
-    throw new Error('Greenscreens API not initialized. Call initializeGreenscreensAPI first.');
+    // Auto-initialize with default config if not already initialized
+    const config = {
+      apiKey: process.env.GREENSCREENS_API_KEY || process.env.NEXT_PUBLIC_GREENSCREENS_API_KEY || '',
+      baseUrl: process.env.GREENSCREENS_BASE_URL || 'https://connect.greenscreens.ai',
+      timeout: parseInt(process.env.GREENSCREENS_TIMEOUT || '10000'),
+    };
+    greenscreensAPI = new GreenscreensAPI(config);
   }
   return greenscreensAPI;
 }
+
+// Export alias for compatibility
+export const greenscreensApi = getGreenscreensAPI;
 
 export type {
   GreenscreensConfig,

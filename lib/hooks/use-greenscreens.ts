@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { RatePrediction, MarketIntelligence, CarrierBid, QuoteRequest } from '@/lib/greenscreens-api';
 
 interface UseRatePredictionOptions {
@@ -27,6 +27,27 @@ interface ApiState<T> {
   error: string | null;
 }
 
+// Simple in-memory cache
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Debounce utility
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 /**
  * Hook for fetching rate predictions from Greenscreens.ai
  */
@@ -38,17 +59,31 @@ export function useRatePrediction(options: UseRatePredictionOptions) {
   });
 
   const { origin, destination, equipment = 'van', enabled = true } = options;
+  
+  // Debounce the parameters to avoid excessive API calls
+  const debouncedOrigin = useDebounce(origin, 500);
+  const debouncedDestination = useDebounce(destination, 500);
+  const debouncedEquipment = useDebounce(equipment, 300);
 
   const fetchRatePrediction = useCallback(async () => {
-    if (!enabled || !origin || !destination) return;
+    if (!enabled || !debouncedOrigin || !debouncedDestination) return;
+
+    const cacheKey = `rate-${debouncedOrigin}-${debouncedDestination}-${debouncedEquipment}`;
+    
+    // Check cache first
+    const cached = cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      setState({ data: cached.data, loading: false, error: null });
+      return;
+    }
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
       const params = new URLSearchParams({
-        origin,
-        destination,
-        equipment,
+        origin: debouncedOrigin,
+        destination: debouncedDestination,
+        equipment: debouncedEquipment,
       });
 
       const response = await fetch(`/api/greenscreens/rates?${params.toString()}`);
@@ -59,6 +94,10 @@ export function useRatePrediction(options: UseRatePredictionOptions) {
       }
 
       const data = await response.json();
+      
+      // Cache the result
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+      
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -67,7 +106,7 @@ export function useRatePrediction(options: UseRatePredictionOptions) {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
-  }, [origin, destination, equipment, enabled]);
+  }, [debouncedOrigin, debouncedDestination, debouncedEquipment, enabled]);
 
   useEffect(() => {
     fetchRatePrediction();
@@ -90,16 +129,29 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
   });
 
   const { origin, destination, enabled = true } = options;
+  
+  // Debounce the parameters
+  const debouncedOrigin = useDebounce(origin, 500);
+  const debouncedDestination = useDebounce(destination, 500);
 
   const fetchMarketIntelligence = useCallback(async () => {
-    if (!enabled || !origin || !destination) return;
+    if (!enabled || !debouncedOrigin || !debouncedDestination) return;
+
+    const cacheKey = `market-${debouncedOrigin}-${debouncedDestination}`;
+    
+    // Check cache first
+    const cached = cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      setState({ data: cached.data, loading: false, error: null });
+      return;
+    }
 
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
       const params = new URLSearchParams({
-        origin,
-        destination,
+        origin: debouncedOrigin,
+        destination: debouncedDestination,
         type: 'intelligence',
       });
 
@@ -111,6 +163,10 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
       }
 
       const data = await response.json();
+      
+      // Cache the result
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+      
       setState({ data, loading: false, error: null });
     } catch (error) {
       setState({
@@ -119,7 +175,7 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
-  }, [origin, destination, enabled]);
+  }, [debouncedOrigin, debouncedDestination, enabled]);
 
   useEffect(() => {
     fetchMarketIntelligence();
