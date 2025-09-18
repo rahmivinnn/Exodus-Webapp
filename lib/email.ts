@@ -438,4 +438,5 @@ export class EmailService {
 // Initialize email service on module load
 EmailService.initialize().catch(console.error);
 
+export const emailService = EmailService;
 export default EmailService;

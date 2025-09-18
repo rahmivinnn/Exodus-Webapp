@@ -359,7 +359,7 @@ export default function ShippingPage() {
          {/* Documents Tab */}
          <TabsContent value="documents">
            <DocumentManagement 
-             shipmentId={selectedShipment?.id}
+             shipmentId={selectedShipmentId}
              onDocumentSelect={(document) => console.log('Document selected:', document)}
            />
          </TabsContent>

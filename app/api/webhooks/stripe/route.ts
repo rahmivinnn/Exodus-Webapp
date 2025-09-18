@@ -3,15 +3,25 @@ import Stripe from 'stripe';
 import { PaymentService } from '@/lib/payment';
 import { prisma } from '@/lib/database';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+// Only initialize Stripe if we have the required keys
+const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
+  apiVersion: '2023-10-16',
+}) : null;
 
 // POST /api/webhooks/stripe - Handle Stripe webhooks
 export async function POST(request: NextRequest) {
   try {
+    if (!stripe || !endpointSecret) {
+      console.warn('Stripe not configured, webhook disabled');
+      return NextResponse.json(
+        { error: 'Stripe not configured' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');
 

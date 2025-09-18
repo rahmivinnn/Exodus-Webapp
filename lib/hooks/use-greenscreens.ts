@@ -30,28 +30,32 @@ interface ApiState<T> {
 /**
  * Hook for fetching rate predictions from Greenscreens.ai
  */
-export function useRatePrediction(options: UseRatePredictionOptions) {
+export function useRatePrediction(options?: UseRatePredictionOptions) {
   const [state, setState] = useState<ApiState<RatePrediction>>({
     data: null,
     loading: false,
     error: null,
   });
 
-  const { origin, destination, equipment = 'van', enabled = true } = options;
-
-  const fetchRatePrediction = useCallback(async () => {
-    if (!enabled || !origin || !destination) return;
-
+  const fetchRatePrediction = useCallback(async (params: {
+    origin: string;
+    destination: string;
+    equipment_type: string;
+    weight: number;
+    distance: number;
+  }) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const params = new URLSearchParams({
-        origin,
-        destination,
-        equipment,
+      const queryParams = new URLSearchParams({
+        origin: params.origin,
+        destination: params.destination,
+        equipment: params.equipment_type,
+        weight: params.weight.toString(),
+        distance: params.distance.toString(),
       });
 
-      const response = await fetch(`/api/greenscreens/rates?${params.toString()}`);
+      const response = await fetch(`/api/greenscreens/rates?${queryParams.toString()}`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -67,43 +71,40 @@ export function useRatePrediction(options: UseRatePredictionOptions) {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
-  }, [origin, destination, equipment, enabled]);
-
-  useEffect(() => {
-    fetchRatePrediction();
-  }, [fetchRatePrediction]);
+  }, []);
 
   return {
     ...state,
-    refetch: fetchRatePrediction,
+    fetchRatePrediction,
   };
 }
 
 /**
  * Hook for fetching market intelligence from Greenscreens.ai
  */
-export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
+export function useMarketIntelligence(options?: UseMarketIntelligenceOptions) {
   const [state, setState] = useState<ApiState<MarketIntelligence>>({
     data: null,
     loading: false,
     error: null,
   });
 
-  const { origin, destination, enabled = true } = options;
-
-  const fetchMarketIntelligence = useCallback(async () => {
-    if (!enabled || !origin || !destination) return;
-
+  const fetchMarketIntelligence = useCallback(async (params: {
+    origin: string;
+    destination: string;
+    region?: string;
+  }) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const params = new URLSearchParams({
-        origin,
-        destination,
+      const queryParams = new URLSearchParams({
+        origin: params.origin,
+        destination: params.destination,
         type: 'intelligence',
+        ...(params.region && { region: params.region }),
       });
 
-      const response = await fetch(`/api/greenscreens/market?${params.toString()}`);
+      const response = await fetch(`/api/greenscreens/market?${queryParams.toString()}`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -119,15 +120,11 @@ export function useMarketIntelligence(options: UseMarketIntelligenceOptions) {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
-  }, [origin, destination, enabled]);
-
-  useEffect(() => {
-    fetchMarketIntelligence();
-  }, [fetchMarketIntelligence]);
+  }, []);
 
   return {
     ...state,
-    refetch: fetchMarketIntelligence,
+    fetchMarketIntelligence,
   };
 }
 
@@ -188,7 +185,7 @@ export function useCarrierBids(options: UseCarrierBidsOptions) {
  * Hook for fetching market trends from Greenscreens.ai
  */
 export function useMarketTrends(region?: string, enabled = true) {
-  const [state, setState] = useState<ApiState<{ trends: MarketIntelligence[] }>>({
+  const [state, setState] = useState<ApiState<MarketIntelligence[]>>({
     data: null,
     loading: false,
     error: null,
@@ -213,7 +210,7 @@ export function useMarketTrends(region?: string, enabled = true) {
       }
 
       const data = await response.json();
-      setState({ data, loading: false, error: null });
+      setState({ data: data.trends || data, loading: false, error: null });
     } catch (error) {
       setState({
         data: null,
@@ -229,7 +226,7 @@ export function useMarketTrends(region?: string, enabled = true) {
 
   return {
     ...state,
-    refetch: fetchMarketTrends,
+    fetchMarketTrends,
   };
 }
 
