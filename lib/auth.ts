@@ -303,3 +303,6 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 export default AuthService;
+
+// Export named instances for backward compatibility
+export const authService = AuthService;

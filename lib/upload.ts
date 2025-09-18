@@ -3,7 +3,14 @@ import { writeFile, mkdir, unlink, stat } from 'fs/promises';
 import { join, extname, basename } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from './database';
-import sharp from 'sharp';
+// Import sharp with fallback
+let sharp: any;
+try {
+  sharp = require('sharp');
+} catch (error) {
+  console.warn('Sharp not available, image processing disabled');
+  sharp = null;
+}
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -418,6 +425,11 @@ export class UploadService {
    * Compress image
    */
   private static async compressImage(buffer: Buffer): Promise<Buffer> {
+    if (!sharp) {
+      console.warn('Sharp not available, skipping compression');
+      return buffer;
+    }
+    
     try {
       return await sharp(buffer)
         .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
@@ -436,6 +448,11 @@ export class UploadService {
     uploadResult: UploadResult,
     buffer: Buffer
   ): Promise<void> {
+    if (!sharp) {
+      console.warn('Sharp not available, skipping thumbnail generation');
+      return;
+    }
+    
     try {
       const thumbnailBuffer = await sharp(buffer)
         .resize(200, 200, { fit: 'cover' })
