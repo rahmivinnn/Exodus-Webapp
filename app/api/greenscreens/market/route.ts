@@ -3,35 +3,14 @@ import { getGreenscreensAPI } from '@/lib/greenscreens-api';
 
 export async function GET(request: NextRequest) {
   try {
+    const greenscreensAPI = getGreenscreensAPI();
     const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type');
     const origin = searchParams.get('origin');
     const destination = searchParams.get('destination');
     const region = searchParams.get('region');
-    const type = searchParams.get('type') || 'intelligence';
 
-    const greenscreensAPI = getGreenscreensAPI();
-
-    if (type === 'trends') {
-      // Get market trends
-      const result = await greenscreensAPI.getMarketTrends(region || undefined);
-      
-      if (!result.success) {
-        return NextResponse.json(
-          { error: result.error || 'Failed to fetch market trends' },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json(result.data);
-    } else {
-      // Get market intelligence for specific lane
-      if (!origin || !destination) {
-        return NextResponse.json(
-          { error: 'Origin and destination are required for market intelligence' },
-          { status: 400 }
-        );
-      }
-
+    if (type === 'intelligence' && origin && destination) {
       const result = await greenscreensAPI.getMarketIntelligence(origin, destination);
       
       if (!result.success) {
@@ -43,8 +22,26 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json(result.data);
     }
+
+    if (type === 'trends') {
+      const result = await greenscreensAPI.getMarketTrends(region || undefined);
+      
+      if (!result.success) {
+        return NextResponse.json(
+          { error: result.error || 'Failed to fetch market trends' },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(result.data);
+    }
+
+    return NextResponse.json(
+      { error: 'Invalid request parameters' },
+      { status: 400 }
+    );
   } catch (error) {
-    console.error('Market intelligence API error:', error);
+    console.error('Market API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

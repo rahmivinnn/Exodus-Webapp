@@ -1,5 +1,5 @@
 /**
- * Configuration for Greenscreens.ai API integration
+ * Clean configuration for Greenscreens.ai API integration
  */
 
 import { GreenscreensConfig } from './greenscreens-api';
@@ -21,34 +21,12 @@ export const greenscreensConfig: GreenscreensConfig = {
   timeout: GREENSCREENS_TIMEOUT,
 };
 
-// API endpoints configuration
-export const API_ENDPOINTS = {
-  RATE_PREDICTION: '/api/v1/rates/predict',
-  MARKET_INTELLIGENCE: '/api/v1/market/intelligence',
-  CARRIER_BIDS: '/api/v1/carriers/bids',
-  BATCH_RATES: '/api/v1/rates/batch',
-  MARKET_TRENDS: '/api/v1/market/trends',
-  HEALTH_CHECK: '/api/v1/health',
-} as const;
-
-// Default request configuration
-export const DEFAULT_REQUEST_CONFIG = {
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-  timeout: GREENSCREENS_TIMEOUT,
-};
-
 // Equipment types supported by Greenscreens.ai
 export const EQUIPMENT_TYPES = {
   VAN: 'van',
   REEFER: 'reefer',
   FLATBED: 'flatbed',
   STEP_DECK: 'step_deck',
-  LOWBOY: 'lowboy',
-  TANKER: 'tanker',
-  CONTAINER: 'container',
 } as const;
 
 // Market activity levels
@@ -101,3 +79,6 @@ export function getEnvironmentConfig(): {
 export type EquipmentType = typeof EQUIPMENT_TYPES[keyof typeof EQUIPMENT_TYPES];
 export type MarketActivity = typeof MARKET_ACTIVITY[keyof typeof MARKET_ACTIVITY];
 export type RateTrend = typeof RATE_TRENDS[keyof typeof RATE_TRENDS];
+
+// Export alias for compatibility
+export const getConfig = getEnvironmentConfig;

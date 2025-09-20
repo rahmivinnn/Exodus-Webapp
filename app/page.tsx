@@ -5,10 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Truck, Shield, Clock, Users, Star, CheckCircle, Award } from "lucide-react"
-import Image from "next/image"
+import { Truck, Shield, Clock, CheckCircle, Award, Star } from "lucide-react"
 import { RateCalculator } from "@/components/rate-calculator"
 import { MarketDashboard } from "@/components/market-dashboard"
 
