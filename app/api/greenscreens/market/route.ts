@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGreenscreensAPI } from '@/lib/greenscreens-api';
+import { initializeGreenscreensAPI } from '@/lib/greenscreens-api';
+import { greenscreensConfig } from '@/lib/config';
+
+// Initialize the Greenscreens API
+const greenscreensAPI = initializeGreenscreensAPI(greenscreensConfig);
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,8 +12,6 @@ export async function GET(request: NextRequest) {
     const destination = searchParams.get('destination');
     const region = searchParams.get('region');
     const type = searchParams.get('type') || 'intelligence';
-
-    const greenscreensAPI = getGreenscreensAPI();
 
     if (type === 'trends') {
       // Get market trends

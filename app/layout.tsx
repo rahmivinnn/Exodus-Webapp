@@ -10,9 +10,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Exodus Logistix - Tailored Logistics Solutions",
+  title: "Greenscreens.ai - Freight Intelligence API",
   description:
-    "Powering logistics with precision and trust. End-to-end freight management and real-time operational data for your supply chain success.",
+    "AI-powered freight rate predictions, market intelligence, and carrier insights. Get instant quotes and real-time market data.",
   generator: "v0.app",
 }
 
