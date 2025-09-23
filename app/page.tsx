@@ -1,4 +1,4 @@
-import { Header } from "@/components/header"
+﻿import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Truck, Shield, Clock, Users, Star, CheckCircle, Award } from "lucide-react"
 import Image from "next/image"
-import { RateCalculator } from "@/components/rate-calculator"
+import { FreightRateCalculator } from "@/components/FreightRateCalculator"
 import { MarketDashboard } from "@/components/market-dashboard"
 
 export default function HomePage() {
@@ -21,7 +21,7 @@ export default function HomePage() {
       <section
         className="relative h-[600px] bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/highway-trucks-warehouse.png')`,
+          backgroundImage: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/highway-trucks-warehouse.png'),
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center">
@@ -81,11 +81,11 @@ export default function HomePage() {
               },
             ].map((service, index) => (
               <Card key={index} className="overflow-hidden">
-                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url('${service.image}')` }} />
+                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: url('') }} />
                 <CardContent className="p-6">
                   <h3 className="font-bold text-lg mb-3">{service.title}</h3>
                   <p className="text-gray-600 text-sm mb-4">{service.description}</p>
-                  <Button className={`${service.buttonColor} hover:opacity-90 text-white w-full`}>Learn More</Button>
+                  <Button className={${service.buttonColor} hover:opacity-90 text-white w-full}>Learn More</Button>
                 </CardContent>
               </Card>
             ))}
@@ -104,7 +104,7 @@ export default function HomePage() {
               Use our AI-powered rate calculator to get accurate freight quotes in seconds.
             </p>
           </div>
-          <RateCalculator />
+          <FreightRateCalculator />
         </div>
       </section>
 
@@ -139,7 +139,7 @@ export default function HomePage() {
             <div>
               <h2 className="text-4xl font-bold mb-6">Why Choose Us</h2>
               <p className="text-gray-600 mb-8">
-                At Exodus Logistix, we don't just move freight — we move your business forward with cutting-edge AI technology.
+                At Exodus Logistix, we don't just move freight  we move your business forward with cutting-edge AI technology.
               </p>
               <div className="space-y-6">
                 {[
@@ -209,11 +209,11 @@ export default function HomePage() {
               },
             ].map((industry, index) => (
               <Card key={index} className="overflow-hidden">
-                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url('${industry.image}')` }} />
+                <div className="h-48 bg-cover bg-center" style={{ backgroundImage: url('') }} />
                 <CardContent className="p-6">
                   <h3 className="font-bold text-xl mb-3">{industry.title}</h3>
                   <p className="text-gray-600 mb-4">{industry.description}</p>
-                  <Button className={`${industry.buttonColor} hover:opacity-90 text-white`}>Learn More</Button>
+                  <Button className={${industry.buttonColor} hover:opacity-90 text-white}>Learn More</Button>
                 </CardContent>
               </Card>
             ))}
@@ -291,13 +291,13 @@ export default function HomePage() {
         <div
           className="w-full h-full bg-cover bg-center"
           style={{
-            backgroundImage: `url('/california-map-green.png')`,
+            backgroundImage: url('/california-map-green.png'),
           }}
         >
           <div className="w-full h-full bg-green-100 bg-opacity-50 flex items-center justify-center">
             <div className="text-center">
               <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <span className="text-white font-bold">📍</span>
+                <span className="text-white font-bold"></span>
               </div>
               <p className="text-teal-800 font-semibold">Our Location</p>
             </div>
