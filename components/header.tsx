@@ -12,26 +12,14 @@ export function Header() {
             </Link>
           </div>
           <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-600 hover:text-gray-900">
-              Home
-            </Link>
-            <Link href="/services" className="text-gray-600 hover:text-gray-900">
-              Services
-            </Link>
-            <Link href="/about" className="text-gray-600 hover:text-gray-900">
-              About
-            </Link>
-            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-              Contact
-            </Link>
+            <Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+            <Link href="/services" className="text-gray-600 hover:text-gray-900">Services</Link>
+            <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+            <Link href="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              Login
-            </Button>
-            <Button size="sm">
-              Get Quote
-            </Button>
+            <Button variant="outline" size="sm">Login</Button>
+            <Button size="sm">Get Quote</Button>
           </div>
         </div>
       </div>
