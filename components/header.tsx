@@ -1,92 +1,38 @@
-"use client"
-
-import Link from "next/link"
+﻿import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Image from "next/image"
 
 export function Header() {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/placeholder-logo.svg"
-              alt="Exodus Logistix"
-              width={180}
-              height={40}
-              className="h-10 w-auto"
-            />
-          </Link>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-teal-600 font-medium">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <Link href="/" className="text-2xl font-bold text-gray-900">
+              Exodus Logistix
+            </Link>
+          </div>
+          <nav className="hidden md:flex space-x-8">
+            <Link href="/" className="text-gray-600 hover:text-gray-900">
               Home
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-teal-600 font-medium">
+            <Link href="/services" className="text-gray-600 hover:text-gray-900">
+              Services
+            </Link>
+            <Link href="/about" className="text-gray-600 hover:text-gray-900">
               About
             </Link>
-            <Link href="/shipping" className="text-gray-700 hover:text-teal-600 font-medium">
-              Shipping
+            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+              Contact
             </Link>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-teal-600 font-medium">
-                Services <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/services">All Services</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/freight-auditing">Freight Auditing</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-teal-600 font-medium">
-                Industries <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href="/industries">All Industries</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-teal-600 font-medium">
-                Resources <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Resources</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center text-gray-700 hover:text-teal-600 font-medium">
-                Join us <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Join us</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Link href="/contact" className="text-gray-700 hover:text-teal-600 font-medium">
-              Contact us
-            </Link>
-
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 border border-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-xs">🌐</span>
-              </div>
-              <Button className="bg-green-500 hover:bg-green-600 text-white rounded-full px-6">Request a Quote</Button>
-            </div>
           </nav>
+          <div className="flex items-center space-x-4">
+            <Button variant="outline" size="sm">
+              Login
+            </Button>
+            <Button size="sm">
+              Get Quote
+            </Button>
+          </div>
         </div>
       </div>
     </header>
