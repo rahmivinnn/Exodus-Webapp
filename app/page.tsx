@@ -101,7 +101,7 @@ export default function HomePage() {
               Get Instant Rate Quotes
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Use our AI-powered rate calculator to get accurate freight quotes in seconds.
+              Use our rate calculator to get accurate freight quotes in seconds.
             </p>
           </div>
           <FreightRateCalculator />
@@ -139,7 +139,7 @@ export default function HomePage() {
             <div>
               <h2 className="text-4xl font-bold mb-6">Why Choose Us</h2>
               <p className="text-gray-600 mb-8">
-                At Exodus Logistix, we don't just move freight  we move your business forward with cutting-edge AI technology.
+                At Exodus Logistix, we don't just move freight  we move your business forward with cutting-edge technology.
               </p>
               <div className="space-y-6">
                 {[

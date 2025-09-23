@@ -1,22 +1,5 @@
 ﻿"use client";
 
-/**
- * FREIGHT RATE CALCULATOR COMPONENT
- * =================================
- * 
- * This is the main React component for the freight rate calculator.
- * It provides a clean, user-friendly interface for calculating freight rates.
- * 
- * Key Features:
- * - Real-time rate calculations
- * - Form validation and error handling
- * - Responsive design with animations
- * - Clean, maintainable code structure
- * 
- * @author Exodus Logistix Development Team
- * @version 1.0.0
- */
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -41,16 +24,9 @@ import {
 // COMPONENT INTERFACES
 // ============================================================================
 
-/**
- * Props for the FreightRateCalculator component
- * Currently no props are required, but this interface is ready for future extensions
- */
 interface FreightRateCalculatorProps {
-  /** Optional callback when a rate is calculated */
   onRateCalculated?: (result: FreightRateResult) => void;
-  /** Optional callback when an error occurs */
   onError?: (error: string) => void;
-  /** Optional initial form data */
   initialData?: Partial<FreightRateInput>;
 }
 
@@ -58,32 +34,16 @@ interface FreightRateCalculatorProps {
 // MAIN COMPONENT
 // ============================================================================
 
-/**
- * FreightRateCalculator Component
- * 
- * A comprehensive freight rate calculator with the following features:
- * - Form validation and error handling
- * - Real-time calculations
- * - Beautiful, responsive UI
- * - Animation effects for better UX
- * - Clean, maintainable code structure
- * 
- * @param props - Component props
- * @returns JSX element
- */
 export function FreightRateCalculator({ 
   onRateCalculated, 
   onError, 
   initialData 
 }: FreightRateCalculatorProps = {}) {
+  
   // ========================================================================
   // STATE MANAGEMENT
   // ========================================================================
   
-  /**
-   * Form data state
-   * Contains all the input values for the freight rate calculation
-   */
   const [formData, setFormData] = useState<FreightRateInput>({
     origin: initialData?.origin || "",
     destination: initialData?.destination || "",
@@ -96,10 +56,6 @@ export function FreightRateCalculator({
     fuelSurcharge: initialData?.fuelSurcharge || 0,
   });
   
-  /**
-   * UI state management
-   * Controls loading states, results, and error messages
-   */
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<FreightRateResult | null>(null);
   const [error, setError] = useState("");
@@ -108,35 +64,17 @@ export function FreightRateCalculator({
   // EVENT HANDLERS
   // ========================================================================
   
-  /**
-   * Handle input field changes
-   * 
-   * This function updates the form data and clears any existing errors
-   * when the user makes changes to the form.
-   * 
-   * @param field - The field name to update
-   * @param value - The new value for the field
-   */
   const handleInputChange = (field: keyof FreightRateInput, value: string | number) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
     
-    // Clear error when user makes changes
     if (error) {
       setError("");
     }
   };
 
-  /**
-   * Handle form submission
-   * 
-   * This function validates the input data and calculates the freight rate.
-   * It includes comprehensive error handling and loading states.
-   * 
-   * @param e - Form submit event
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -144,7 +82,6 @@ export function FreightRateCalculator({
     setResult(null);
 
     try {
-      // Validate input data
       const validation = validateFreightRateInput(formData);
       if (!validation.isValid) {
         const errorMessage = validation.errors.join(", ");
@@ -153,7 +90,6 @@ export function FreightRateCalculator({
         return;
       }
 
-      // Calculate freight rate
       const calculatedResult = calculateFreightRate(formData);
       setResult(calculatedResult);
       onRateCalculated?.(calculatedResult);
@@ -172,11 +108,6 @@ export function FreightRateCalculator({
   // COMPUTED VALUES
   // ========================================================================
   
-  /**
-   * Check if the form is valid for submission
-   * 
-   * This ensures all required fields are filled before allowing submission.
-   */
   const isFormValid = Boolean(
     formData.origin && 
     formData.destination && 
@@ -189,11 +120,6 @@ export function FreightRateCalculator({
   // RENDER FUNCTIONS
   // ========================================================================
   
-  /**
-   * Render the form section
-   * 
-   * This includes all the input fields for the freight rate calculation.
-   */
   const renderForm = () => (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -398,11 +324,6 @@ export function FreightRateCalculator({
     </motion.div>
   );
 
-  /**
-   * Render the results section
-   * 
-   * This displays the calculated freight rate and related information.
-   */
   const renderResults = () => (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -535,17 +456,4 @@ export function FreightRateCalculator({
   );
 }
 
-// ============================================================================
-// DEFAULT EXPORT
-// ============================================================================
-
-/**
- * Default export for easy importing
- * 
- * Usage:
- * import FreightRateCalculator from "@/components/FreightRateCalculator";
- * 
- * Or with named import:
- * import { FreightRateCalculator } from "@/components/FreightRateCalculator";
- */
 export default FreightRateCalculator;

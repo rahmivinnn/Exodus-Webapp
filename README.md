@@ -1,8 +1,8 @@
-﻿#  EXODUS LOGISTIX - FREIGHT MANAGEMENT SYSTEM
+﻿# EXODUS LOGISTIX - FREIGHT MANAGEMENT SYSTEM
 
-> **Professional freight management and rate calculation system built with Next.js, TypeScript, and modern web technologies.**
+> Professional freight management and rate calculation system built with Next.js, TypeScript, and modern web technologies.
 
-##  QUICK START
+## QUICK START
 
 ### Prerequisites
 - Node.js 18+ 
@@ -28,7 +28,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-##  PROJECT STRUCTURE
+## PROJECT STRUCTURE
 
 `
 exodus-webapp/
@@ -45,9 +45,9 @@ exodus-webapp/
  public/                # Static assets
 `
 
-##  KEY FEATURES
+## KEY FEATURES
 
-###  Freight Rate Calculator
+### Freight Rate Calculator
 - Real-time rate calculations
 - Multiple equipment types (Van, Reefer, Flatbed, etc.)
 - Distance calculation between US cities
@@ -55,19 +55,19 @@ exodus-webapp/
 - Fuel surcharge calculations
 - Confidence scoring
 
-###  Carrier Integrations
+### Carrier Integrations
 - FedEx API integration
 - UPS API integration  
 - DHL API integration
 - Rate comparison across carriers
 
-###  User Management
+### User Management
 - JWT authentication
 - User registration/login
 - Rate calculation history
 - Shipment tracking
 
-###  Modern Tech Stack
+### Modern Tech Stack
 - **Frontend**: Next.js 15, React 19, TypeScript
 - **Styling**: Tailwind CSS, Radix UI
 - **Backend**: Next.js API Routes, Prisma ORM
@@ -75,7 +75,7 @@ exodus-webapp/
 - **Payments**: Stripe integration
 - **Deployment**: Vercel
 
-##  DEVELOPMENT
+## DEVELOPMENT
 
 ### Available Scripts
 `ash
@@ -94,7 +94,7 @@ npm run type-check   # Run TypeScript type checking
 - **Prettier** - Automatic code formatting
 - **JSDoc** - Comprehensive documentation
 
-##  DOCUMENTATION
+## DOCUMENTATION
 
 ### For Developers
 - **[Fullstack Developer Guide](./FULLSTACK_DEVELOPER_GUIDE.md)** - Complete development guide
@@ -125,7 +125,7 @@ const result = calculateFreightRate({
 });
 `
 
-##  CONFIGURATION
+## CONFIGURATION
 
 ### Environment Variables
 `ash
@@ -163,7 +163,7 @@ npx prisma migrate dev
 npx prisma studio
 `
 
-##  DEPLOYMENT
+## DEPLOYMENT
 
 ### Vercel (Recommended)
 `ash
@@ -187,7 +187,7 @@ npm run build
 npm run start
 `
 
-##  TESTING
+## TESTING
 
 `ash
 # Run all tests
@@ -200,7 +200,7 @@ npm run test:watch
 npm run test:coverage
 `
 
-##  MONITORING
+## MONITORING
 
 ### Error Tracking
 - Console logging for development
@@ -212,7 +212,7 @@ npm run test:coverage
 - Bundle analysis with @next/bundle-analyzer
 - Database query optimization with Prisma
 
-##  CONTRIBUTING
+## CONTRIBUTING
 
 1. Fork the repository
 2. Create a feature branch (git checkout -b feature/amazing-feature)
@@ -222,16 +222,16 @@ npm run test:coverage
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
-##  SUPPORT
+## SUPPORT
 
 - **Documentation**: Check the guides above
 - **Issues**: [GitHub Issues](https://github.com/rahmivinnn/Exodus-Webapp/issues)
 - **Email**: dev@exoduslogistix.com
 
-##  LICENSE
+## LICENSE
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with  by the Exodus Logistix Development Team**
+**Built with by the Exodus Logistix Development Team**

@@ -1,382 +1,412 @@
-import { PrismaClient } from '@prisma/client';
+﻿import { PrismaClient, User, RateCalculation, Shipment, ShipmentStatus } from "@prisma/client";
 
-// Global variable to store the Prisma client instance
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+// ============================================================================
+// DATABASE SERVICE CLASS
+// ============================================================================
 
-// Create Prisma client with configuration
-export const prisma = globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL,
-      },
-    },
-  });
-
-// Prevent multiple instances in development
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-
-// Database connection utility functions
 export class DatabaseService {
-  private static instance: DatabaseService;
-  private client: PrismaClient;
+  private prisma: PrismaClient;
 
-  private constructor() {
-    this.client = prisma;
+  constructor() {
+    this.prisma = new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    });
   }
 
-  public static getInstance(): DatabaseService {
-    if (!DatabaseService.instance) {
-      DatabaseService.instance = new DatabaseService();
-    }
-    return DatabaseService.instance;
+  // ========================================================================
+  // USER MANAGEMENT
+  // ========================================================================
+
+  async createUser(data: {
+    email: string;
+    name?: string;
+    company?: string;
+    phone?: string;
+  }): Promise<User> {
+    return await this.prisma.user.create({
+      data: {
+        email: data.email,
+        name: data.name,
+        company: data.company,
+        phone: data.phone,
+      },
+    });
   }
 
-  public getClient(): PrismaClient {
-    return this.client;
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
-  // Health check
-  public async healthCheck(): Promise<boolean> {
-    try {
-      await this.client.$queryRaw`SELECT 1`;
-      return true;
-    } catch (error) {
-      console.error('Database health check failed:', error);
-      return false;
-    }
-  }
-
-  // Connection management
-  public async connect(): Promise<void> {
-    try {
-      await this.client.$connect();
-      console.log('Database connected successfully');
-    } catch (error) {
-      console.error('Failed to connect to database:', error);
-      throw error;
-    }
-  }
-
-  public async disconnect(): Promise<void> {
-    try {
-      await this.client.$disconnect();
-      console.log('Database disconnected successfully');
-    } catch (error) {
-      console.error('Failed to disconnect from database:', error);
-      throw error;
-    }
-  }
-
-  // Transaction wrapper
-  public async transaction<T>(
-    callback: (tx: PrismaClient) => Promise<T>
-  ): Promise<T> {
-    return await this.client.$transaction(callback);
-  }
-
-  // Soft delete utility
-  public async softDelete(model: string, id: string): Promise<any> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
-
-    return await modelDelegate.update({
+  async getUserById(id: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
       where: { id },
-      data: { deletedAt: new Date() },
     });
   }
 
-  // Bulk operations
-  public async bulkCreate(model: string, data: any[]): Promise<any> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
-
-    return await modelDelegate.createMany({
+  async updateUser(id: string, data: Partial<User>): Promise<User> {
+    return await this.prisma.user.update({
+      where: { id },
       data,
-      skipDuplicates: true,
     });
   }
 
-  public async bulkUpdate(model: string, updates: { where: any; data: any }[]): Promise<any[]> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
+  // ========================================================================
+  // RATE CALCULATIONS
+  // ========================================================================
 
-    const results = [];
-    for (const update of updates) {
-      const result = await modelDelegate.updateMany(update);
-      results.push(result);
-    }
-    return results;
-  }
-
-  // Search utilities
-  public async search(model: string, query: string, fields: string[]): Promise<any[]> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
-
-    const searchConditions = fields.map(field => ({
-      [field]: {
-        contains: query,
-        mode: 'insensitive' as const,
-      },
-    }));
-
-    return await modelDelegate.findMany({
-      where: {
-        OR: searchConditions,
+  async saveRateCalculation(data: {
+    userId?: string;
+    origin: string;
+    destination: string;
+    equipmentType: string;
+    weight?: number;
+    distance?: number;
+    totalCost: number;
+    baseRate: number;
+    weightCost: number;
+    distanceCost: number;
+    fuelSurcharge: number;
+    additionalSurcharges: number;
+    estimatedDays: number;
+    confidence: number;
+  }): Promise<RateCalculation> {
+    return await this.prisma.rateCalculation.create({
+      data: {
+        userId: data.userId,
+        origin: data.origin,
+        destination: data.destination,
+        equipmentType: data.equipmentType,
+        weight: data.weight,
+        distance: data.distance,
+        totalCost: data.totalCost,
+        baseRate: data.baseRate,
+        weightCost: data.weightCost,
+        distanceCost: data.distanceCost,
+        fuelSurcharge: data.fuelSurcharge,
+        additionalSurcharges: data.additionalSurcharges,
+        estimatedDays: data.estimatedDays,
+        confidence: data.confidence,
       },
     });
   }
 
-  // Pagination utility
-  public async paginate(
-    model: string,
-    page: number = 1,
-    limit: number = 10,
-    where: any = {},
-    orderBy: any = { createdAt: 'desc' }
-  ): Promise<{
-    data: any[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
-  }> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
+  async getUserRateHistory(userId: string, limit: number = 50): Promise<RateCalculation[]> {
+    return await this.prisma.rateCalculation.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  }
 
-    const skip = (page - 1) * limit;
+  async getRateCalculationById(id: string): Promise<RateCalculation | null> {
+    return await this.prisma.rateCalculation.findUnique({
+      where: { id },
+      include: {
+        user: true,
+      },
+    });
+  }
 
-    const [data, total] = await Promise.all([
-      modelDelegate.findMany({
-        where,
-        orderBy,
-        skip,
-        take: limit,
+  async markRateAsBooked(id: string): Promise<RateCalculation> {
+    return await this.prisma.rateCalculation.update({
+      where: { id },
+      data: { isBooked: true },
+    });
+  }
+
+  // ========================================================================
+  // SHIPMENTS
+  // ========================================================================
+
+  async createShipment(data: {
+    userId: string;
+    trackingNumber: string;
+    carrier: string;
+    serviceType?: string;
+    origin: string;
+    destination: string;
+    equipmentType: string;
+    weight?: number;
+    distance?: number;
+    totalCost?: number;
+    pickupDate?: Date;
+    deliveryDate?: Date;
+    notes?: string;
+  }): Promise<Shipment> {
+    return await this.prisma.shipment.create({
+      data: {
+        userId: data.userId,
+        trackingNumber: data.trackingNumber,
+        carrier: data.carrier,
+        serviceType: data.serviceType,
+        origin: data.origin,
+        destination: data.destination,
+        equipmentType: data.equipmentType,
+        weight: data.weight,
+        distance: data.distance,
+        totalCost: data.totalCost,
+        pickupDate: data.pickupDate,
+        deliveryDate: data.deliveryDate,
+        notes: data.notes,
+      },
+    });
+  }
+
+  async getShipmentByTrackingNumber(trackingNumber: string): Promise<Shipment | null> {
+    return await this.prisma.shipment.findUnique({
+      where: { trackingNumber },
+      include: {
+        user: true,
+        documents: true,
+        trackingEvents: {
+          orderBy: { timestamp: "desc" },
+        },
+      },
+    });
+  }
+
+  async getUserShipments(userId: string, limit: number = 50): Promise<Shipment[]> {
+    return await this.prisma.shipment.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      include: {
+        documents: true,
+        trackingEvents: {
+          orderBy: { timestamp: "desc" },
+          take: 1,
+        },
+      },
+    });
+  }
+
+  async updateShipmentStatus(
+    trackingNumber: string, 
+    status: ShipmentStatus
+  ): Promise<Shipment> {
+    return await this.prisma.shipment.update({
+      where: { trackingNumber },
+      data: { status },
+    });
+  }
+
+  async addTrackingEvent(data: {
+    shipmentId: string;
+    status: string;
+    location?: string;
+    description?: string;
+    timestamp: Date;
+  }) {
+    return await this.prisma.trackingEvent.create({
+      data: {
+        shipmentId: data.shipmentId,
+        status: data.status,
+        location: data.location,
+        description: data.description,
+        timestamp: data.timestamp,
+      },
+    });
+  }
+
+  // ========================================================================
+  // ANALYTICS AND REPORTING
+  // ========================================================================
+
+  async getRateCalculationStats(userId?: string) {
+    const whereClause = userId ? { userId } : {};
+
+    const [totalCalculations, averageCost, mostPopularRoute] = await Promise.all([
+      this.prisma.rateCalculation.count({
+        where: whereClause,
       }),
-      modelDelegate.count({ where }),
+      this.prisma.rateCalculation.aggregate({
+        where: whereClause,
+        _avg: { totalCost: true },
+      }),
+      this.prisma.rateCalculation.groupBy({
+        by: ["origin", "destination"],
+        where: whereClause,
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
+        take: 1,
+      }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    return {
+      totalCalculations,
+      averageCost: averageCost._avg.totalCost || 0,
+      mostPopularRoute: mostPopularRoute[0] || null,
+    };
+  }
+
+  async getShipmentStats(userId?: string) {
+    const whereClause = userId ? { userId } : {};
+
+    const [totalShipments, statusBreakdown] = await Promise.all([
+      this.prisma.shipment.count({
+        where: whereClause,
+      }),
+      this.prisma.shipment.groupBy({
+        by: ["status"],
+        where: whereClause,
+        _count: { id: true },
+      }),
+    ]);
 
     return {
-      data,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages,
-        hasNext: page < totalPages,
-        hasPrev: page > 1,
-      },
+      totalShipments,
+      statusBreakdown: statusBreakdown.reduce((acc, item) => {
+        acc[item.status] = item._count.id;
+        return acc;
+      }, {} as Record<string, number>),
     };
   }
 
-  // Aggregation utilities
-  public async aggregate(model: string, aggregation: any): Promise<any> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
+  // ========================================================================
+  // CARRIER RATES CACHING
+  // ========================================================================
 
-    return await modelDelegate.aggregate(aggregation);
-  }
-
-  public async groupBy(model: string, grouping: any): Promise<any> {
-    const modelDelegate = (this.client as any)[model];
-    if (!modelDelegate) {
-      throw new Error(`Model ${model} not found`);
-    }
-
-    return await modelDelegate.groupBy(grouping);
-  }
-
-  // Audit logging
-  public async logAudit(
-    userId: string,
-    action: string,
-    resource: string,
-    resourceId?: string,
-    oldValues?: any,
-    newValues?: any,
-    ipAddress?: string,
-    userAgent?: string
-  ): Promise<void> {
-    try {
-      await this.client.auditLog.create({
-        data: {
-          userId,
-          action,
-          resource,
-          resourceId,
-          oldValues,
-          newValues,
-          ipAddress,
-          userAgent,
+  async cacheCarrierRate(data: {
+    carrier: string;
+    origin: string;
+    destination: string;
+    equipmentType: string;
+    serviceType: string;
+    baseRate: number;
+    fuelSurcharge: number;
+    totalRate: number;
+    transitDays: number;
+    validFrom: Date;
+    validTo?: Date;
+  }) {
+    return await this.prisma.carrierRate.upsert({
+      where: {
+        carrier_origin_destination_equipmentType_serviceType_validFrom: {
+          carrier: data.carrier,
+          origin: data.origin,
+          destination: data.destination,
+          equipmentType: data.equipmentType,
+          serviceType: data.serviceType,
+          validFrom: data.validFrom,
         },
-      });
-    } catch (error) {
-      console.error('Failed to log audit:', error);
-      // Don't throw error to prevent breaking the main operation
-    }
-  }
-
-  // Database seeding utilities
-  public async seed(): Promise<void> {
-    console.log('Starting database seeding...');
-
-    try {
-      // Seed carriers
-      await this.seedCarriers();
-      
-      // Seed admin user
-      await this.seedAdminUser();
-      
-      console.log('Database seeding completed successfully');
-    } catch (error) {
-      console.error('Database seeding failed:', error);
-      throw error;
-    }
-  }
-
-  private async seedCarriers(): Promise<void> {
-    const carriers = [
-      {
-        name: 'FedEx',
-        code: 'FEDEX',
-        type: 'EXPRESS' as const,
-        domestic: true,
-        international: true,
-        regions: ['US', 'CA', 'MX', 'EU', 'AS', 'AU'],
-        baseRate: 12.99,
-        weightMultiplier: 2.5,
-        fuelSurcharge: 0.15,
-        phone: '1-800-463-3339',
-        email: 'support@fedex.com',
-        website: 'https://www.fedex.com',
       },
-      {
-        name: 'UPS',
-        code: 'UPS',
-        type: 'EXPRESS' as const,
-        domestic: true,
-        international: true,
-        regions: ['US', 'CA', 'MX', 'EU', 'AS'],
-        baseRate: 11.99,
-        weightMultiplier: 2.3,
-        fuelSurcharge: 0.14,
-        phone: '1-800-742-5877',
-        email: 'support@ups.com',
-        website: 'https://www.ups.com',
+      update: {
+        baseRate: data.baseRate,
+        fuelSurcharge: data.fuelSurcharge,
+        totalRate: data.totalRate,
+        transitDays: data.transitDays,
+        validTo: data.validTo,
       },
-      {
-        name: 'DHL',
-        code: 'DHL',
-        type: 'INTERNATIONAL' as const,
-        domestic: false,
-        international: true,
-        regions: ['EU', 'AS', 'AF', 'AU', 'SA'],
-        baseRate: 25.99,
-        weightMultiplier: 4.2,
-        fuelSurcharge: 0.18,
-        phone: '1-800-225-5345',
-        email: 'support@dhl.com',
-        website: 'https://www.dhl.com',
-      },
-      {
-        name: 'USPS',
-        code: 'USPS',
-        type: 'POSTAL' as const,
-        domestic: true,
-        international: true,
-        regions: ['US'],
-        baseRate: 8.95,
-        weightMultiplier: 1.5,
-        fuelSurcharge: 0.08,
-        phone: '1-800-275-8777',
-        email: 'support@usps.com',
-        website: 'https://www.usps.com',
-      },
-    ];
-
-    for (const carrier of carriers) {
-      await this.client.carrier.upsert({
-        where: { code: carrier.code },
-        update: carrier,
-        create: carrier,
-      });
-    }
-
-    console.log('Carriers seeded successfully');
-  }
-
-  private async seedAdminUser(): Promise<void> {
-    const adminUser = {
-      email: 'admin@exodus.com',
-      username: 'admin',
-      firstName: 'System',
-      lastName: 'Administrator',
-      password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj6hsxq/3/Hm', // 'admin123'
-      role: 'ADMIN' as const,
-      emailVerified: new Date(),
-    };
-
-    await this.client.user.upsert({
-      where: { email: adminUser.email },
-      update: adminUser,
-      create: adminUser,
+      create: data,
     });
-
-    console.log('Admin user seeded successfully');
   }
 
-  // Database migration utilities
-  public async runMigrations(): Promise<void> {
-    try {
-      // This would typically be handled by Prisma CLI
-      // but we can add custom migration logic here if needed
-      console.log('Running database migrations...');
-      // Add custom migration logic here
-      console.log('Database migrations completed');
-    } catch (error) {
-      console.error('Database migrations failed:', error);
-      throw error;
-    }
+  async getCachedCarrierRates(params: {
+    carrier?: string;
+    origin?: string;
+    destination?: string;
+    equipmentType?: string;
+  }) {
+    return await this.prisma.carrierRate.findMany({
+      where: {
+        carrier: params.carrier,
+        origin: params.origin,
+        destination: params.destination,
+        equipmentType: params.equipmentType,
+        validFrom: { lte: new Date() },
+        OR: [
+          { validTo: null },
+          { validTo: { gte: new Date() } },
+        ],
+      },
+      orderBy: { validFrom: "desc" },
+    });
   }
 
-  // Backup utilities
-  public async createBackup(): Promise<string> {
-    // Implementation would depend on the database provider
-    // This is a placeholder for backup functionality
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const backupName = `backup-${timestamp}`;
-    
-    console.log(`Creating database backup: ${backupName}`);
-    // Add actual backup logic here
-    
-    return backupName;
+  // ========================================================================
+  // SYSTEM SETTINGS
+  // ========================================================================
+
+  async getSystemSetting(key: string): Promise<string | null> {
+    const setting = await this.prisma.systemSetting.findUnique({
+      where: { key },
+    });
+    return setting?.value || null;
+  }
+
+  async setSystemSetting(key: string, value: string, description?: string) {
+    return await this.prisma.systemSetting.upsert({
+      where: { key },
+      update: { value, description },
+      create: { key, value, description },
+    });
+  }
+
+  // ========================================================================
+  // CLEANUP AND MAINTENANCE
+  // ========================================================================
+
+  async cleanupExpiredRates() {
+    return await this.prisma.carrierRate.deleteMany({
+      where: {
+        validTo: { lt: new Date() },
+      },
+    });
+  }
+
+  async cleanupOldTrackingEvents(daysOld: number = 90) {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld);
+
+    return await this.prisma.trackingEvent.deleteMany({
+      where: {
+        createdAt: { lt: cutoffDate },
+      },
+    });
+  }
+
+  // ========================================================================
+  // CONNECTION MANAGEMENT
+  // ========================================================================
+
+  async disconnect() {
+    await this.prisma.();
+  }
+
+  async connect() {
+    await this.prisma.();
   }
 }
 
-// Export singleton instance
-export const db = DatabaseService.getInstance();
+// ============================================================================
+// SINGLETON INSTANCE
+// ============================================================================
 
-// Export Prisma client for direct use
-export default prisma;
+export const db = new DatabaseService();
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+export async function withDatabase<T>(
+  operation: (db: DatabaseService) => Promise<T>
+): Promise<T> {
+  try {
+    return await operation(db);
+  } catch (error) {
+    console.error("Database operation failed:", error);
+    throw error;
+  }
+}
+
+export function handleDatabaseError(error: unknown): never {
+  console.error("Database error:", error);
+  
+  if (error instanceof Error) {
+    throw new Error(Database operation failed: );
+  }
+  
+  throw new Error("Database operation failed: Unknown error");
+}
